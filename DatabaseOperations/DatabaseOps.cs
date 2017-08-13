@@ -14,6 +14,8 @@ namespace DatabaseOperations
         string strConn;
         public string fileName;
 
+        SqlConnection sqlconn;
+
         public string StrConn
         {
             get { return strConn; }
@@ -54,13 +56,13 @@ namespace DatabaseOperations
         public bool checkForTableExistence(string tableName)
         {
             int check = 0;
-            using (SqlConnection connectionString = new SqlConnection(StrConn))
+            using (sqlconn = new SqlConnection(StrConn))
             {
                 string checkExistence = @"IF EXISTS(SELECT*FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME=" + "'" + tableName + "') SELECT 1 ELSE SELECT 0";
-                connectionString.Open();
-                SqlCommand sqlCommand = new SqlCommand(checkExistence, connectionString);
+                sqlconn.Open();
+                SqlCommand sqlCommand = new SqlCommand(checkExistence, sqlconn);
                 check = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                connectionString.Close();
+                sqlconn.Close();
             }
 
             if(check == 0)
@@ -73,7 +75,7 @@ namespace DatabaseOperations
 
         public void CreateTable(string tableName, string attributeA, string dataTypeA, string attributeB, string dataTypeB, string attributeC, string dataTypeC, string attributeD, string dataTypeD, string attributeE, string dataTypeE)
         {
-            using (SqlConnection connectionString = new SqlConnection(StrConn))
+            using (sqlconn = new SqlConnection(StrConn))
             {
                 if (!checkForTableExistence(tableName))
                 {
@@ -87,24 +89,24 @@ namespace DatabaseOperations
                         tableName, attributeA, dataTypeA, attributeB, dataTypeB,attributeC,dataTypeC,attributeD,dataTypeD,attributeE,dataTypeE);
 
                     string createTableCommand = temp;
-                    SqlCommand sqlCommand = new SqlCommand(createTableCommand, connectionString);
-                    connectionString.Open();
+                    SqlCommand sqlCommand = new SqlCommand(createTableCommand, sqlconn);
+                    sqlconn.Open();
                     sqlCommand.ExecuteNonQuery();
                 }
             }
         }
 
-        public void UpdateDataset(DataSet ds)
+        public void UpdateDataset(DataSet ds, string tableName)
         {
-            SqlConnection conn = new SqlConnection(StrConn);
+            sqlconn = new SqlConnection(StrConn);
 
             string sInsert, sUpdate, sDelete;
 
-            sInsert = "INSERT INTO Items (Barcode,Item,Price,Quantity) values(@p2,@p3,@p4,@p5)";
+            sInsert = "INSERT INTO " + tableName + "(Barcode,Item,Price,Quantity) values(@p2,@p3,@p4,@p5)";
 
-            sUpdate = "UPDATE Items SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
+            sUpdate = "UPDATE " + tableName + "SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
 
-            sDelete = "DELETE FROM Items WHERE ID=@p1";
+            sDelete = "DELETE FROM " + tableName + " WHERE ID=@p1";
 
             SqlParameter[] pInsert = new SqlParameter[4];
             SqlParameter[] pUpdate = new SqlParameter[5];
@@ -123,9 +125,9 @@ namespace DatabaseOperations
 
             pDelete[0] = new SqlParameter("@p1", SqlDbType.VarChar, 255, "ID");
 
-            var cmdInsert = new SqlCommand(sInsert, conn);
-            var cmdUpdate = new SqlCommand(sUpdate, conn);
-            var cmdDelete = new SqlCommand(sDelete, conn);
+            var cmdInsert = new SqlCommand(sInsert, sqlconn);
+            var cmdUpdate = new SqlCommand(sUpdate, sqlconn);
+            var cmdDelete = new SqlCommand(sDelete, sqlconn);
 
             cmdInsert.Parameters.AddRange(pInsert);
             cmdUpdate.Parameters.AddRange(pUpdate);
@@ -135,8 +137,19 @@ namespace DatabaseOperations
             da.InsertCommand = cmdInsert;
             da.UpdateCommand = cmdUpdate;
             da.DeleteCommand = cmdDelete;
-            da.Update(ds, "Items");
+            da.Update(ds, tableName);
             ds.AcceptChanges();
+        }
+
+        public void dropTable(string tableName)
+        {
+            using (sqlconn = new SqlConnection(strConn))
+            {
+                string query = "DROP TABLE @tableName";
+                SqlCommand sqlComm = new SqlCommand(query, sqlconn);
+                sqlComm.Parameters.AddWithValue("@tableName", tableName);
+                sqlComm.ExecuteNonQuery();
+            }
         }
     }
 }

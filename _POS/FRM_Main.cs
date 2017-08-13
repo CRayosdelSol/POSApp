@@ -22,12 +22,16 @@ namespace _POS
         string dir;
         protected string filepath;
         protected string connString;
+        int transactionCounter;
 
         DataSet ds;
         SqlDataAdapter da;
         DatabaseOps Db;
         SqlDataReader reader;
-       
+        SqlConnection sqlConnection;
+        SqlCommand sqlComm;
+
+
 
 
         internal int specificQuantity, totalQuantity;
@@ -66,8 +70,6 @@ namespace _POS
             //Scale the datagridview so that all of its contents are properly shown to the user.
             grid.Width = grid.Columns.Cast<DataGridViewColumn>().Sum(x => x.Width) +
             (grid.RowHeadersVisible ? grid.RowHeadersWidth : 0) + 3;
-
-
         }
 
         #region Inventory Bits
@@ -92,22 +94,22 @@ namespace _POS
 
             Db.CreateTable("Items", "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
 
-            bindDatasource(dtgrd_Inventory);
+            bindDatasource(dtgrd_Inventory,"Items");
             scaleComponents(dtgrd_Inventory);
 
         }
 
-        public void bindDatasource(DataGridView grid)
+        public void bindDatasource(DataGridView grid, string tableName)
         {
             try
             {
-                SqlConnection sqlConn = new SqlConnection(connString);
-                string command = "SELECT * FROM Items";
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                sqlConnection = new SqlConnection(connString);
+                string command = "SELECT * FROM " + tableName;
+                sqlComm = new SqlCommand(command, sqlConnection);
                 da = new SqlDataAdapter(sqlComm);
                 ds = new DataSet();
-                da.Fill(ds, "Items");
-                grid.DataMember = "Items";
+                da.Fill(ds, tableName);
+                grid.DataMember = tableName;
                 grid.DataSource = ds;
 
                 sqlComm.Dispose();
@@ -127,8 +129,8 @@ namespace _POS
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Db.UpdateDataset(ds);
-            bindDatasource(dtgrd_Inventory);
+            Db.UpdateDataset(ds,"Items");
+            bindDatasource(dtgrd_Inventory,"Items");
             scaleComponents(dtgrd_Inventory);
         }
         #endregion
@@ -140,8 +142,18 @@ namespace _POS
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
-            dtrgd_POS.Rows.Clear();
-            dtrgd_POS.Refresh();
+            string tableName = string.Format("TRANSACTION_{0}_{1}", DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter);
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to cancel this transaction?", "Cancel Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                dtrgd_POS.Rows.Clear();
+                dtrgd_POS.Refresh();
+                Db.dropTable(tableName);
+            }
+            else
+            {
+                //Just making sure nothing happens.
+            }
         }
 
         private void btn_delete_Click(object sender, EventArgs e)
@@ -172,6 +184,7 @@ namespace _POS
             txtbx_searchBox.Clear();
         }
 
+        #region searching
         private void txtbx_searchBox_TextChanged(object sender, EventArgs e)
         {
             string searchMode = cmbbx_searchMode.GetItemText(cmbbx_searchMode.SelectedItem).Replace(" ", "").ToLower();
@@ -198,6 +211,7 @@ namespace _POS
 
             dtgrd_Inventory.DataSource = ds.Tables["Items"].DefaultView;
         }
+        #endregion
 
         private void dtgrd_Inventory_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -283,6 +297,28 @@ namespace _POS
             Scan();
         }
 
+        private void lstbx_transactions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            object selectedItem = lstbx_transactions.SelectedItem;
+            if(lstbx_transactions.SelectedIndex > -1)
+            {
+                bindDatasource(dtgrd_transactions, lstbx_transactions.SelectedItem.ToString());
+            }
+        }
+
+        private void btn_finalize_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to finalize this transaction?", "Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                transactionCounter++;
+            }
+            else
+            {
+                //making sure nothing happens. 
+            }
+        }
+
         /// <summary>
         /// Search the database using the specified serial number.
         /// </summary>
@@ -291,14 +327,20 @@ namespace _POS
         {
             string[] items = null;
 
+            string tableName = string.Format("TRANSACTION_{0}_{1}",DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter);
             string command = "SELECT * FROM Items WHERE Barcode=@code";
 
             string barcode = string.Empty, itemName = string.Empty;
             double itemPrice = 0, computedPrice = 0;
 
-            using (SqlConnection sqlConnection = new SqlConnection(connString))
+            Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+            bindDatasource(dtrgd_POS, tableName);
+
+
+            using (sqlConnection = new SqlConnection(connString))
             {
-                SqlCommand sqlComm = new SqlCommand(command,sqlConnection);
+                sqlConnection.Open();
+                sqlComm = new SqlCommand(command,sqlConnection);
                 sqlComm.Parameters.AddWithValue("@code", serialNumber);
                 reader = sqlComm.ExecuteReader();
                 while (reader.Read())
@@ -322,6 +364,32 @@ namespace _POS
 
                 dtrgd_POS.Rows.Add(items);
             }
+        }
+
+        public void listPreviousTransactions()
+        {
+            lstbx_transactions.Items.Clear();
+            string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
+            using (sqlConnection = new SqlConnection(connString))
+            {
+                sqlConnection.Open();
+
+                using(sqlComm = new SqlCommand(query,sqlConnection))
+                {
+                    using(reader = sqlComm.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string filter = reader["TABLE_NAME"].ToString();
+                            if (filter.Contains("TRANSACTION"))
+                            {
+                                lstbx_transactions.Items.Add(filter);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
