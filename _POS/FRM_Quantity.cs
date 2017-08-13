@@ -29,6 +29,13 @@ namespace _POS
         private void btn_Quantity_Click(object sender, EventArgs e)
         {
             mainFrm.specificQuantity = int.Parse(txtbx_Quantity.Text);
+            mainFrm.specified_Quantity = true;
+            Close();
+        }
+
+        private void btn_cancel_Click(object sender, EventArgs e)
+        {
+            mainFrm.specified_Quantity = false;
             Close();
         }
     }

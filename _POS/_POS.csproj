@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FRM_IPAddSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FRM_IPAddSettings.Designer.cs">
+      <DependentUpon>FRM_IPAddSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="FRM_Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +65,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FRM_IPAddSettings.resx">
+      <DependentUpon>FRM_IPAddSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FRM_Main.resx">
       <DependentUpon>FRM_Main.cs</DependentUpon>
     </EmbeddedResource>

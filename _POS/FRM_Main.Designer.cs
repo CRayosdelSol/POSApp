@@ -44,10 +44,9 @@
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.POS = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btn_setScanner = new System.Windows.Forms.Button();
+            this.btn_startScan = new System.Windows.Forms.Button();
             this.grpbx_summary = new System.Windows.Forms.GroupBox();
-            this.lbl_totalPrice = new System.Windows.Forms.Label();
             this.lbl_totalItems = new System.Windows.Forms.Label();
             this.txtbx_total = new System.Windows.Forms.TextBox();
             this.btn_clear = new System.Windows.Forms.Button();
@@ -55,12 +54,12 @@
             this.btn_quantity = new System.Windows.Forms.Button();
             this.btn_finalize = new System.Windows.Forms.Button();
             this.dtrgd_POS = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ststrplbl_Datetime = new System.Windows.Forms.ToolStripStatusLabel();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -231,8 +230,8 @@
             // 
             // POS
             // 
-            this.POS.Controls.Add(this.button2);
-            this.POS.Controls.Add(this.button3);
+            this.POS.Controls.Add(this.btn_setScanner);
+            this.POS.Controls.Add(this.btn_startScan);
             this.POS.Controls.Add(this.grpbx_summary);
             this.POS.Controls.Add(this.txtbx_total);
             this.POS.Controls.Add(this.btn_clear);
@@ -248,42 +247,36 @@
             this.POS.Text = "Point Of Sale";
             this.POS.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btn_setScanner
             // 
-            this.button2.Location = new System.Drawing.Point(694, 280);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(150, 132);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "START SCANNING";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btn_setScanner.Location = new System.Drawing.Point(694, 280);
+            this.btn_setScanner.Name = "btn_setScanner";
+            this.btn_setScanner.Size = new System.Drawing.Size(150, 132);
+            this.btn_setScanner.TabIndex = 14;
+            this.btn_setScanner.Text = "SCNNER SETTINGS";
+            this.btn_setScanner.UseVisualStyleBackColor = true;
+            this.btn_setScanner.Click += new System.EventHandler(this.btn_setScanner_Click);
             // 
-            // button3
+            // btn_startScan
             // 
-            this.button3.Location = new System.Drawing.Point(849, 280);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(150, 132);
-            this.button3.TabIndex = 13;
-            this.button3.UseVisualStyleBackColor = true;
+            this.btn_startScan.Enabled = false;
+            this.btn_startScan.Location = new System.Drawing.Point(849, 280);
+            this.btn_startScan.Name = "btn_startScan";
+            this.btn_startScan.Size = new System.Drawing.Size(150, 132);
+            this.btn_startScan.TabIndex = 13;
+            this.btn_startScan.Text = "START SCANNING";
+            this.btn_startScan.UseVisualStyleBackColor = true;
+            this.btn_startScan.Click += new System.EventHandler(this.btn_startScan_Click);
             // 
             // grpbx_summary
             // 
-            this.grpbx_summary.Controls.Add(this.lbl_totalPrice);
             this.grpbx_summary.Controls.Add(this.lbl_totalItems);
             this.grpbx_summary.Location = new System.Drawing.Point(696, 416);
             this.grpbx_summary.Name = "grpbx_summary";
-            this.grpbx_summary.Size = new System.Drawing.Size(309, 119);
+            this.grpbx_summary.Size = new System.Drawing.Size(309, 85);
             this.grpbx_summary.TabIndex = 12;
             this.grpbx_summary.TabStop = false;
             this.grpbx_summary.Text = "Transaction Summary";
-            // 
-            // lbl_totalPrice
-            // 
-            this.lbl_totalPrice.AutoSize = true;
-            this.lbl_totalPrice.Location = new System.Drawing.Point(21, 77);
-            this.lbl_totalPrice.Name = "lbl_totalPrice";
-            this.lbl_totalPrice.Size = new System.Drawing.Size(92, 20);
-            this.lbl_totalPrice.TabIndex = 1;
-            this.lbl_totalPrice.Text = "Total Price:-";
             // 
             // lbl_totalItems
             // 
@@ -296,12 +289,14 @@
             // 
             // txtbx_total
             // 
-            this.txtbx_total.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtbx_total.Location = new System.Drawing.Point(6, 9);
+            this.txtbx_total.BackColor = System.Drawing.SystemColors.MenuText;
+            this.txtbx_total.Font = new System.Drawing.Font("Courier New", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
+            this.txtbx_total.Location = new System.Drawing.Point(7, 11);
             this.txtbx_total.Name = "txtbx_total";
             this.txtbx_total.Size = new System.Drawing.Size(682, 89);
             this.txtbx_total.TabIndex = 11;
-            this.txtbx_total.Text = "TOTAL           $0.00";
+            this.txtbx_total.Text = "TOTAL     ₱0.00";
             // 
             // btn_clear
             // 
@@ -351,8 +346,8 @@
             this.dtrgd_POS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4});
+            this.dataGridViewTextBoxColumn4,
+            this.dataGridViewTextBoxColumn3});
             this.dtrgd_POS.Location = new System.Drawing.Point(7, 106);
             this.dtrgd_POS.Name = "dtrgd_POS";
             this.dtrgd_POS.RowTemplate.Height = 28;
@@ -360,38 +355,6 @@
             this.dtrgd_POS.Size = new System.Drawing.Size(683, 481);
             this.dtrgd_POS.TabIndex = 3;
             this.dtrgd_POS.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dtrgd_POS_RowsAdded);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Barcode";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Barcode";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Width = 105;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Item";
-            this.dataGridViewTextBoxColumn2.HeaderText = "Item";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 77;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Price";
-            this.dataGridViewTextBoxColumn3.HeaderText = "Price";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "Quantity";
-            this.dataGridViewTextBoxColumn4.HeaderText = "Quantity";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.Width = 104;
             // 
             // statusStrip1
             // 
@@ -409,6 +372,38 @@
             this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
             this.ststrplbl_Datetime.Size = new System.Drawing.Size(179, 25);
             this.ststrplbl_Datetime.Text = "toolStripStatusLabel1";
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Barcode";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Barcode";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.Width = 105;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "Item";
+            this.dataGridViewTextBoxColumn2.HeaderText = "Item";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.Width = 77;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn4.DataPropertyName = "Quantity";
+            this.dataGridViewTextBoxColumn4.HeaderText = "Quantity";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.Width = 104;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "Price";
+            this.dataGridViewTextBoxColumn3.HeaderText = "Price";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.Width = 80;
             // 
             // FRM_Main
             // 
@@ -454,10 +449,9 @@
         private System.Windows.Forms.Button btn_finalize;
         private System.Windows.Forms.TextBox txtbx_total;
         private System.Windows.Forms.GroupBox grpbx_summary;
-        private System.Windows.Forms.Label lbl_totalPrice;
         private System.Windows.Forms.Label lbl_totalItems;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_setScanner;
+        private System.Windows.Forms.Button btn_startScan;
         private System.Windows.Forms.GroupBox grpbx_DBActions;
         private System.Windows.Forms.Button btn_Del;
         private System.Windows.Forms.StatusStrip statusStrip1;
@@ -473,8 +467,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
     }
 }
 

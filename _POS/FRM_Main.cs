@@ -12,6 +12,7 @@ using System.IO;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Net.Sockets;
+using System.Net;
 
 
 namespace _POS
@@ -21,12 +22,19 @@ namespace _POS
         string dir;
         protected string filepath;
         protected string connString;
+
         DataSet ds;
         SqlDataAdapter da;
         DatabaseOps Db;
+        SqlDataReader reader;
+       
+
 
         internal int specificQuantity, totalQuantity;
         internal decimal totalPrice;
+        internal string IPAddressHolder;
+        internal Int32 PortNumber;
+        internal bool specified_Quantity, setScannerSettings;
 
         public FRM_Main()
         {
@@ -35,13 +43,13 @@ namespace _POS
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             initializeDataGrid();
             dtgrd_Inventory.AutoGenerateColumns = false;
             Timer tmr = new Timer();
             tmr.Interval = 1000; // ticks every 1 second
             tmr.Tick += new EventHandler(updateTime);
             tmr.Start();
-
             cmbbx_searchMode.SelectedIndex = 0;
 
             scaleComponents(dtgrd_Inventory);
@@ -216,6 +224,104 @@ namespace _POS
             txtbx_total.Text = totalPrice.ToString("C3", CultureInfo.CreateSpecificCulture("en-PH"));
 
             scaleComponents(dtrgd_POS);
+        }
+
+        private void btn_setScanner_Click(object sender, EventArgs e)
+        {
+            FRM_IPAddSettings frm_IpAddSettings = new FRM_IPAddSettings(this);
+            frm_IpAddSettings.ShowDialog();
+            if (setScannerSettings)
+            {
+                btn_startScan.Enabled = true;
+            }
+            else
+            {
+                btn_startScan.Enabled = false;
+            }
+        }
+
+        public void Scan()
+        {
+            TcpListener server = null;
+
+            Byte[] bytes = new byte[256];
+            string serialNumberHolder = string.Empty;
+
+            try
+            {
+                IPAddress ipAdd = IPAddress.Parse(IPAddressHolder);
+                server = new TcpListener(ipAdd, PortNumber);
+                server.Start();
+                TcpClient client = server.AcceptTcpClient();
+
+                NetworkStream stream = client.GetStream();
+
+                int i;
+
+                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                {
+                    serialNumberHolder = Encoding.ASCII.GetString(bytes, 0, i);
+                    searchForItem(serialNumberHolder);
+                }
+
+                client.Close();
+            }
+            catch(SocketException ex)
+            {
+
+            }
+            finally
+            {
+                server.Stop();
+            }
+
+
+        }
+
+        private void btn_startScan_Click(object sender, EventArgs e)
+        {
+            Scan();
+        }
+
+        /// <summary>
+        /// Search the database using the specified serial number.
+        /// </summary>
+        /// <param name="serialNumber">The item's serial number.</param>
+        public void searchForItem(string serialNumber)
+        {
+            string[] items = null;
+
+            string command = "SELECT * FROM Items WHERE Barcode=@code";
+
+            string barcode = string.Empty, itemName = string.Empty;
+            double itemPrice = 0, computedPrice = 0;
+
+            using (SqlConnection sqlConnection = new SqlConnection(connString))
+            {
+                SqlCommand sqlComm = new SqlCommand(command,sqlConnection);
+                sqlComm.Parameters.AddWithValue("@code", serialNumber);
+                reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    barcode = reader["Barcdoe"].ToString();
+                    itemName = reader["Item"].ToString();
+                    itemPrice = Convert.ToDouble(reader["Price"].ToString());
+                }
+
+                computedPrice = Convert.ToDouble(specificQuantity) * itemPrice;
+
+                if (specified_Quantity)
+                {
+                    items = new string[] { barcode, itemName, specificQuantity.ToString(), computedPrice.ToString() };
+                    specified_Quantity = false;
+                }
+                else
+                {
+                    items = new string[] { barcode, itemName, "1", computedPrice.ToString() };
+                }
+
+                dtrgd_POS.Rows.Add(items);
+            }
         }
     }
 }
