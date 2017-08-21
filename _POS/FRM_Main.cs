@@ -275,6 +275,7 @@ namespace _POS
                 while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
                     serialNumberHolder = Encoding.ASCII.GetString(bytes, 0, i);
+                    MessageBox.Show("The value {0} was received.", serialNumberHolder);
                     searchForItem(serialNumberHolder);
                 }
 
