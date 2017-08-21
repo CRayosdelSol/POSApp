@@ -11,7 +11,7 @@ namespace DatabaseOperations
     public class DatabaseOps
     {
 
-        string strConn;
+        internal string strConn;
         public string fileName;
 
         SqlConnection sqlconn;
@@ -75,10 +75,11 @@ namespace DatabaseOperations
 
         public void CreateTable(string tableName, string attributeA, string dataTypeA, string attributeB, string dataTypeB, string attributeC, string dataTypeC, string attributeD, string dataTypeD, string attributeE, string dataTypeE)
         {
-            using (sqlconn = new SqlConnection(StrConn))
+            using (SqlConnection sqlconn = new SqlConnection(StrConn))
             {
                 if (!checkForTableExistence(tableName))
                 {
+                    sqlconn.Open();
                     string temp = string.Format(
                         "CREATE TABLE {0}(" +
                         "{1} {2}," +
@@ -90,7 +91,6 @@ namespace DatabaseOperations
 
                     string createTableCommand = temp;
                     SqlCommand sqlCommand = new SqlCommand(createTableCommand, sqlconn);
-                    sqlconn.Open();
                     sqlCommand.ExecuteNonQuery();
                 }
             }
@@ -104,7 +104,7 @@ namespace DatabaseOperations
 
             sInsert = "INSERT INTO " + tableName + "(Barcode,Item,Price,Quantity) values(@p2,@p3,@p4,@p5)";
 
-            sUpdate = "UPDATE " + tableName + "SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
+            sUpdate = "UPDATE " + tableName + " SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
 
             sDelete = "DELETE FROM " + tableName + " WHERE ID=@p1";
 
