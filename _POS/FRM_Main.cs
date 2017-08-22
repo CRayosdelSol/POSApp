@@ -20,20 +20,19 @@ namespace _POS
     public partial class FRM_Main : Form
     {
         string dir;
+        string tableName;
         protected string filepath;
         protected string connString;
         protected bool isScanning;
         int transactionCounter;
 
+        DataTable dt;
         DataSet ds;
         SqlDataAdapter da;
         DatabaseOps Db;
         SqlDataReader reader;
         SqlConnection sqlConnection;
         SqlCommand sqlComm;
-
-
-
 
         internal int specificQuantity, totalQuantity;
         internal decimal totalPrice;
@@ -56,8 +55,8 @@ namespace _POS
             tmr.Tick += new EventHandler(updateTime);
             tmr.Start();
             cmbbx_searchMode.SelectedIndex = 0;
-            statusStrip1.Text = "OMG";
             scaleComponents(dtgrd_Inventory);
+            listPreviousTransactions();
         }
 
         public void scaleComponents(DataGridView grid)
@@ -91,7 +90,17 @@ namespace _POS
                 Db.CreateDatabase(filepath);
             }
 
+            tableName = string.Format("[TRANSACTION_{0}_{1}]", DateTime.Now.ToString("MM_dd_yyyy_hh_mm"), transactionCounter);
+
+
             Db.CreateTable("Items", "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+            //Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+
+            //dt = new DataTable(tableName);
+            //dt.Columns.Add("Barcode",Type.GetType("System.String"));
+            //dt.Columns.Add("Item", Type.GetType("System.String"));
+            //dt.Columns.Add("Price", Type.GetType("System.String"));
+            //dt.Columns.Add("Quantity", Type.GetType("System.String"));
 
             bindDatasource(dtgrd_Inventory,"Items");
             scaleComponents(dtgrd_Inventory);
@@ -136,13 +145,14 @@ namespace _POS
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
-            string tableName = string.Format("TRANSACTION_{0}_{1}", DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter);
             DialogResult dialogResult = MessageBox.Show("Are you sure you wish to cancel this transaction?", "Cancel Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
+                totalQuantity = 0;
                 dtrgd_POS.Rows.Clear();
                 dtrgd_POS.Refresh();
-                Db.dropTable(tableName);
+                lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
+                txtbx_total.Text = "TOTAL     ₱0.00";
             }
             else
             {
@@ -223,6 +233,7 @@ namespace _POS
         private void dtrgd_POS_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             totalPrice = 0;
+            totalQuantity = 0;
 
             foreach(DataGridViewRow row in dtrgd_POS.Rows)
             {
@@ -232,14 +243,7 @@ namespace _POS
 
             //Display the total cost in terms of Philippine Peso
             txtbx_total.Text = "TOTAL:   " +  totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
-
-            //scaleComponents(dtrgd_POS);
-
-            //TRANSAC_HISTORY_BIT_AL
-            //string tableName = string.Format("[TRANSACTION_{0}_{1}]", DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter+10000);
-            //Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
-            //bindDatasource(dtrgd_POS, tableName);
-            //Db.UpdateDataset(ds,tableName);
+            lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
         }
 
         private void btn_setScanner_Click(object sender, EventArgs e)
@@ -332,6 +336,8 @@ namespace _POS
             if (dialogResult == DialogResult.Yes)
             {
                 transactionCounter++;
+                buildDataTable(dtrgd_POS, dt, tableName);
+
             }
             else
             {
@@ -352,15 +358,12 @@ namespace _POS
         /// <param name="serialNumber">The item's serial number.</param>
         public void searchForItem(string serialNumber)
         {
-            string[] items = null;
+            object[] items = null;
 
             string command = "SELECT * FROM Items WHERE Barcode=@code";
 
             string barcode = string.Empty, itemName = string.Empty;
             double itemPrice = 0, computedPrice = 0;
-
-            
-
 
             using (sqlConnection = new SqlConnection(connString))
             {
@@ -378,18 +381,52 @@ namespace _POS
                 if (specified_Quantity)
                 {
                     computedPrice = Convert.ToDouble(specificQuantity) * itemPrice;
-                    items = new string[] { barcode, itemName, specificQuantity.ToString(), computedPrice.ToString() };
+                    items = new object[] { barcode, itemName, specificQuantity.ToString(), computedPrice.ToString() };
                     specified_Quantity = false;
                 }
                 else
                 {
                     
-                    items = new string[] { barcode, itemName, "1", itemPrice.ToString() };
+                    items = new object[] { barcode, itemName, "1", itemPrice.ToString() };
                 }
 
                 dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
+
+                //dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.DataSource = dt; }));
                 //dtrgd_POS.Rows.Add(items);
             }
+        }
+
+        public void buildDataTable(DataGridView grid, DataTable table, string tableName) 
+        {
+            var brcd = string.Empty;
+            var itm = string.Empty;
+            var qnty = string.Empty;
+            var prc = string.Empty;
+            object[] items = null;
+
+            Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+
+            dt = new DataTable(tableName);
+            dt.Columns.Add("Barcode", Type.GetType("System.String"));
+            dt.Columns.Add("Item", Type.GetType("System.String"));
+            dt.Columns.Add("Price", Type.GetType("System.String"));
+            dt.Columns.Add("Quantity", Type.GetType("System.String"));
+
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                brcd = row.Cells[0].Value.ToString();
+                itm = row.Cells[1].Value.ToString();
+                qnty = row.Cells[2].Value.ToString();
+                prc = row.Cells[3].Value.ToString();
+                items = new object[] { brcd, itm, qnty, prc };
+                dt.Rows.Add(items);
+            }
+
+            dt.Rows.Add(new object[] { "TOTAL", string.Empty, string.Empty, totalPrice.ToString() });
+
+            ds.Tables.Add(dt);
+            Db.UpdateDataset(ds, tableName);
         }
 
         public void listPreviousTransactions()

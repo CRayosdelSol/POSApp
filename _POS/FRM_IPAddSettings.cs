@@ -83,6 +83,7 @@ namespace _POS
         private void FRM_IPAddSettings_Load(object sender, EventArgs e)
         {
             obtainLocalHostIP();
+            txtbx_portNum.Text = "5000";
         }
     }
 

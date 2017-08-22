@@ -30,6 +30,8 @@
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ststrplbl_Datetime = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ststrplbl_Port = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ststrplbl_IP = new System.Windows.Forms.ToolStripStatusLabel();
             this.Tbctrl_POS = new System.Windows.Forms.TabControl();
             this.Inventory = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -40,6 +42,11 @@
             this.btn_Del = new System.Windows.Forms.Button();
             this.btn_commit = new System.Windows.Forms.Button();
             this.dtgrd_Inventory = new System.Windows.Forms.DataGridView();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Barcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.POS = new System.Windows.Forms.TabPage();
             this.btn_setScanner = new System.Windows.Forms.Button();
             this.btn_startScan = new System.Windows.Forms.Button();
@@ -68,13 +75,7 @@
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Barcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ststrplbl_Port = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ststrplbl_IP = new System.Windows.Forms.ToolStripStatusLabel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
@@ -88,6 +89,7 @@
             this.groupBox3.SuspendLayout();
             this.grpbx_transactionList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -108,6 +110,18 @@
             this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
             this.ststrplbl_Datetime.Size = new System.Drawing.Size(92, 25);
             this.ststrplbl_Datetime.Text = "Date Time";
+            // 
+            // ststrplbl_Port
+            // 
+            this.ststrplbl_Port.Name = "ststrplbl_Port";
+            this.ststrplbl_Port.Size = new System.Drawing.Size(44, 25);
+            this.ststrplbl_Port.Text = "Port";
+            // 
+            // ststrplbl_IP
+            // 
+            this.ststrplbl_IP.Name = "ststrplbl_IP";
+            this.ststrplbl_IP.Size = new System.Drawing.Size(97, 25);
+            this.ststrplbl_IP.Text = "IP Address";
             // 
             // Tbctrl_POS
             // 
@@ -224,12 +238,48 @@
             this.dtgrd_Inventory.Size = new System.Drawing.Size(694, 580);
             this.dtgrd_Inventory.TabIndex = 0;
             // 
+            // ID
+            // 
+            this.ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ID.DataPropertyName = "ID";
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
+            // 
+            // Barcode
+            // 
+            this.Barcode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Barcode.DataPropertyName = "Barcode";
+            this.Barcode.HeaderText = "Barcode";
+            this.Barcode.Name = "Barcode";
+            // 
+            // Item
+            // 
+            this.Item.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Item.DataPropertyName = "Item";
+            this.Item.HeaderText = "Item";
+            this.Item.Name = "Item";
+            // 
+            // Price
+            // 
+            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Price.DataPropertyName = "Price";
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            // 
+            // Quantity
+            // 
+            this.Quantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Quantity.DataPropertyName = "Quantity";
+            this.Quantity.HeaderText = "Quantity";
+            this.Quantity.Name = "Quantity";
+            // 
             // POS
             // 
+            this.POS.Controls.Add(this.panel1);
             this.POS.Controls.Add(this.btn_setScanner);
             this.POS.Controls.Add(this.btn_startScan);
             this.POS.Controls.Add(this.grpbx_summary);
-            this.POS.Controls.Add(this.txtbx_total);
             this.POS.Controls.Add(this.btn_cancelTransaction);
             this.POS.Controls.Add(this.btn_delete);
             this.POS.Controls.Add(this.btn_quantity);
@@ -286,11 +336,12 @@
             // txtbx_total
             // 
             this.txtbx_total.BackColor = System.Drawing.SystemColors.MenuText;
-            this.txtbx_total.Font = new System.Drawing.Font("Consolas", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbx_total.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtbx_total.Font = new System.Drawing.Font("Consolas", 26F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
-            this.txtbx_total.Location = new System.Drawing.Point(7, 11);
+            this.txtbx_total.Location = new System.Drawing.Point(-7, 19);
             this.txtbx_total.Name = "txtbx_total";
-            this.txtbx_total.Size = new System.Drawing.Size(682, 92);
+            this.txtbx_total.Size = new System.Drawing.Size(682, 61);
             this.txtbx_total.TabIndex = 11;
             this.txtbx_total.Text = "TOTAL     ₱0.00";
             this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -390,7 +441,7 @@
             this.History.Location = new System.Drawing.Point(4, 29);
             this.History.Name = "History";
             this.History.Padding = new System.Windows.Forms.Padding(3);
-            this.History.Size = new System.Drawing.Size(1008, 575);
+            this.History.Size = new System.Drawing.Size(1008, 592);
             this.History.TabIndex = 2;
             this.History.Text = "History";
             this.History.UseVisualStyleBackColor = true;
@@ -455,6 +506,7 @@
             this.lstbx_transactions.Name = "lstbx_transactions";
             this.lstbx_transactions.Size = new System.Drawing.Size(272, 404);
             this.lstbx_transactions.TabIndex = 0;
+            this.lstbx_transactions.Click += new System.EventHandler(this.lstbx_transactions_SelectedIndexChanged);
             // 
             // dtgrd_transactions
             // 
@@ -513,53 +565,14 @@
             this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             this.dataGridViewTextBoxColumn9.Width = 104;
             // 
-            // ID
+            // panel1
             // 
-            this.ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ID.DataPropertyName = "ID";
-            this.ID.HeaderText = "ID";
-            this.ID.Name = "ID";
-            this.ID.ReadOnly = true;
-            // 
-            // Barcode
-            // 
-            this.Barcode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Barcode.DataPropertyName = "Barcode";
-            this.Barcode.HeaderText = "Barcode";
-            this.Barcode.Name = "Barcode";
-            // 
-            // Item
-            // 
-            this.Item.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Item.DataPropertyName = "Item";
-            this.Item.HeaderText = "Item";
-            this.Item.Name = "Item";
-            // 
-            // Price
-            // 
-            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Price.DataPropertyName = "Price";
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            // 
-            // Quantity
-            // 
-            this.Quantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Quantity.DataPropertyName = "Quantity";
-            this.Quantity.HeaderText = "Quantity";
-            this.Quantity.Name = "Quantity";
-            // 
-            // ststrplbl_Port
-            // 
-            this.ststrplbl_Port.Name = "ststrplbl_Port";
-            this.ststrplbl_Port.Size = new System.Drawing.Size(44, 25);
-            this.ststrplbl_Port.Text = "Port";
-            // 
-            // ststrplbl_IP
-            // 
-            this.ststrplbl_IP.Name = "ststrplbl_IP";
-            this.ststrplbl_IP.Size = new System.Drawing.Size(97, 25);
-            this.ststrplbl_IP.Text = "IP Address";
+            this.panel1.BackColor = System.Drawing.Color.Black;
+            this.panel1.Controls.Add(this.txtbx_total);
+            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(684, 94);
+            this.panel1.TabIndex = 16;
             // 
             // FRM_Main
             // 
@@ -571,7 +584,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Name = "FRM_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "AAAAAAAAAAA FUCK.";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -582,7 +595,6 @@
             this.grpbx_DBActions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_Inventory)).EndInit();
             this.POS.ResumeLayout(false);
-            this.POS.PerformLayout();
             this.grpbx_summary.ResumeLayout(false);
             this.grpbx_summary.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtrgd_POS)).EndInit();
@@ -591,6 +603,8 @@
             this.groupBox3.PerformLayout();
             this.grpbx_transactionList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -644,6 +658,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
         private System.Windows.Forms.ToolStripStatusLabel ststrplbl_Port;
         private System.Windows.Forms.ToolStripStatusLabel ststrplbl_IP;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

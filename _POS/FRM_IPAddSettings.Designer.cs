@@ -56,9 +56,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(17, 61);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 20);
+            this.label2.Size = new System.Drawing.Size(102, 20);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Port:";
+            this.label2.Text = "Port Number:";
             // 
             // txtbx_netAddA
             // 

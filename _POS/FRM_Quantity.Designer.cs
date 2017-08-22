@@ -49,7 +49,7 @@
             this.btn_ok.Location = new System.Drawing.Point(31, 66);
             this.btn_ok.Name = "btn_ok";
             this.btn_ok.Size = new System.Drawing.Size(116, 43);
-            this.btn_ok.TabIndex = 1;
+            this.btn_ok.TabIndex = 2;
             this.btn_ok.Text = "OK";
             this.btn_ok.UseVisualStyleBackColor = true;
             this.btn_ok.Click += new System.EventHandler(this.btn_Quantity_Click);
@@ -59,7 +59,7 @@
             this.txtbx_Quantity.Location = new System.Drawing.Point(171, 26);
             this.txtbx_Quantity.Name = "txtbx_Quantity";
             this.txtbx_Quantity.Size = new System.Drawing.Size(127, 26);
-            this.txtbx_Quantity.TabIndex = 2;
+            this.txtbx_Quantity.TabIndex = 1;
             // 
             // btn_cancel
             // 
@@ -84,7 +84,7 @@
             this.Controls.Add(this.label1);
             this.Name = "FRM_Quantity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FRM_Quantity";
+            this.Text = "Specify Item Quantity";
             this.ResumeLayout(false);
             this.PerformLayout();
 

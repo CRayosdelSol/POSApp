@@ -145,10 +145,13 @@ namespace DatabaseOperations
         {
             using (sqlconn = new SqlConnection(strConn))
             {
+                sqlconn.Open();
                 string query = "DROP TABLE @tableName";
                 SqlCommand sqlComm = new SqlCommand(query, sqlconn);
                 sqlComm.Parameters.AddWithValue("@tableName", tableName);
                 sqlComm.ExecuteNonQuery();
+                sqlconn.Close();
+                SqlConnection.ClearAllPools();
             }
         }
     }
