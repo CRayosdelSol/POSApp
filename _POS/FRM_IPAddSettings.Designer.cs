@@ -169,6 +169,7 @@
             this.Name = "FRM_IPAddSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Scanner Settings";
+            this.Load += new System.EventHandler(this.FRM_IPAddSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

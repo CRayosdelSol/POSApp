@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
 
 namespace _POS
 {
@@ -14,6 +16,8 @@ namespace _POS
     {
 
         FRM_Main mainForm;
+        string localIP;
+        string[] IPBits;
 
         public FRM_IPAddSettings()
         {
@@ -24,7 +28,6 @@ namespace _POS
         {
             InitializeComponent();
             this.mainForm = mainForm;
-
         }
 
         private void btn_confirm_Click(object sender, EventArgs e)
@@ -53,5 +56,34 @@ namespace _POS
             }
 
         }
+
+        /// <summary>
+        /// Obtain the IPV4 Address of the host.
+        /// </summary>
+        public void obtainLocalHostIP()
+        {
+            IPHostEntry host;
+            localIP = string.Empty;
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    IPBits = localIP.Split('.');
+                    txtbx_netAddA.Text = IPBits[0];
+                    txtbx_netAddB.Text = IPBits[1];
+                    txtbx_netAddC.Text = IPBits[2];
+                    txtbx_netAddD.Text = IPBits[3];
+                    txtbx_portNum.Select();
+                }
+            }
+        }
+
+        private void FRM_IPAddSettings_Load(object sender, EventArgs e)
+        {
+            obtainLocalHostIP();
+        }
     }
+
 }

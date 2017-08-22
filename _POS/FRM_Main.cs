@@ -22,6 +22,7 @@ namespace _POS
         string dir;
         protected string filepath;
         protected string connString;
+        protected bool isScanning;
         int transactionCounter;
 
         DataSet ds;
@@ -55,7 +56,7 @@ namespace _POS
             tmr.Tick += new EventHandler(updateTime);
             tmr.Start();
             cmbbx_searchMode.SelectedIndex = 0;
-
+            statusStrip1.Text = "OMG";
             scaleComponents(dtgrd_Inventory);
         }
 
@@ -67,9 +68,7 @@ namespace _POS
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
 
-            //Scale the datagridview so that all of its contents are properly shown to the user.
-            grid.Width = grid.Columns.Cast<DataGridViewColumn>().Sum(x => x.Width) +
-            (grid.RowHeadersVisible ? grid.RowHeadersWidth : 0) + 3;
+
         }
 
         #region Inventory Bits
@@ -127,12 +126,7 @@ namespace _POS
         {
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Db.UpdateDataset(ds,"Items");
-            bindDatasource(dtgrd_Inventory,"Items");
-            scaleComponents(dtgrd_Inventory);
-        }
+
         #endregion
 
         private void updateTime(object sender, EventArgs e)
@@ -228,16 +222,24 @@ namespace _POS
 
         private void dtrgd_POS_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            totalPrice = 0;
+
             foreach(DataGridViewRow row in dtrgd_POS.Rows)
             {
-                totalQuantity += Convert.ToInt32(row.Cells["Quantity"].Value);
-                totalPrice += Convert.ToDecimal(row.Cells["Price"].Value);
+                totalQuantity += Convert.ToInt32(row.Cells[2].Value);
+                totalPrice += Convert.ToDecimal(row.Cells[3].Value);
             }
 
             //Display the total cost in terms of Philippine Peso
-            txtbx_total.Text = totalPrice.ToString("C3", CultureInfo.CreateSpecificCulture("en-PH"));
+            txtbx_total.Text = "TOTAL:   " +  totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
 
-            scaleComponents(dtrgd_POS);
+            //scaleComponents(dtrgd_POS);
+
+            //TRANSAC_HISTORY_BIT_AL
+            //string tableName = string.Format("[TRANSACTION_{0}_{1}]", DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter+10000);
+            //Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+            //bindDatasource(dtrgd_POS, tableName);
+            //Db.UpdateDataset(ds,tableName);
         }
 
         private void btn_setScanner_Click(object sender, EventArgs e)
@@ -247,6 +249,8 @@ namespace _POS
             if (setScannerSettings)
             {
                 btn_startScan.Enabled = true;
+                ststrplbl_Port.Text = string.Format("Port: {0}", PortNumber);
+                ststrplbl_IP.Text = string.Format("I.P. Address: {0}", IPAddressHolder);
             }
             else
             {
@@ -258,7 +262,7 @@ namespace _POS
         {
             TcpListener server = null;
 
-            Byte[] bytes = new byte[256];
+            Byte[] bytes = new byte[512];
             string serialNumberHolder = string.Empty;
 
             try
@@ -266,6 +270,7 @@ namespace _POS
                 IPAddress ipAdd = IPAddress.Parse(IPAddressHolder);
                 server = new TcpListener(ipAdd, PortNumber);
                 server.Start();
+
                 TcpClient client = server.AcceptTcpClient();
 
                 NetworkStream stream = client.GetStream();
@@ -275,27 +280,41 @@ namespace _POS
                 while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
                     serialNumberHolder = Encoding.ASCII.GetString(bytes, 0, i);
-                    MessageBox.Show("The value {0} was received.", serialNumberHolder);
                     searchForItem(serialNumberHolder);
                 }
 
                 client.Close();
             }
-            catch(SocketException ex)
+            catch (SocketException ex)
             {
 
             }
             finally
             {
                 server.Stop();
+                isScanning = false;
+                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = true; }));
+                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Text = "START SCANNING"; }));
             }
 
 
         }
 
-        private void btn_startScan_Click(object sender, EventArgs e)
+        private async void btn_startScan_Click(object sender, EventArgs e)
         {
-            Scan();
+            /*Return control to the caller until the scanning process is completed.
+            This will keep the UI functional while any received data is being pro-
+            cessed.*/
+            await Task.Run(() =>
+            {
+                isScanning = true;
+                while (isScanning)
+                {
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = false; }));
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Text = "SCANNING"; }));
+                    Scan();
+                }
+            });
         }
 
         private void lstbx_transactions_SelectedIndexChanged(object sender, EventArgs e)
@@ -320,6 +339,13 @@ namespace _POS
             }
         }
 
+        private void btn_commit_Click(object sender, EventArgs e)
+        {
+            Db.UpdateDataset(ds, "Items");
+            bindDatasource(dtgrd_Inventory, "Items");
+            scaleComponents(dtgrd_Inventory);
+        }
+
         /// <summary>
         /// Search the database using the specified serial number.
         /// </summary>
@@ -328,14 +354,12 @@ namespace _POS
         {
             string[] items = null;
 
-            string tableName = string.Format("TRANSACTION_{0}_{1}",DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"), transactionCounter);
             string command = "SELECT * FROM Items WHERE Barcode=@code";
 
             string barcode = string.Empty, itemName = string.Empty;
             double itemPrice = 0, computedPrice = 0;
 
-            Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
-            bindDatasource(dtrgd_POS, tableName);
+            
 
 
             using (sqlConnection = new SqlConnection(connString))
@@ -346,24 +370,25 @@ namespace _POS
                 reader = sqlComm.ExecuteReader();
                 while (reader.Read())
                 {
-                    barcode = reader["Barcdoe"].ToString();
+                    barcode = reader["Barcode"].ToString();
                     itemName = reader["Item"].ToString();
                     itemPrice = Convert.ToDouble(reader["Price"].ToString());
                 }
 
-                computedPrice = Convert.ToDouble(specificQuantity) * itemPrice;
-
                 if (specified_Quantity)
                 {
+                    computedPrice = Convert.ToDouble(specificQuantity) * itemPrice;
                     items = new string[] { barcode, itemName, specificQuantity.ToString(), computedPrice.ToString() };
                     specified_Quantity = false;
                 }
                 else
                 {
-                    items = new string[] { barcode, itemName, "1", computedPrice.ToString() };
+                    
+                    items = new string[] { barcode, itemName, "1", itemPrice.ToString() };
                 }
 
-                dtrgd_POS.Rows.Add(items);
+                dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
+                //dtrgd_POS.Rows.Add(items);
             }
         }
 

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.ststrplbl_Datetime = new System.Windows.Forms.ToolStripStatusLabel();
             this.Tbctrl_POS = new System.Windows.Forms.TabControl();
             this.Inventory = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -38,17 +40,13 @@
             this.btn_Del = new System.Windows.Forms.Button();
             this.btn_commit = new System.Windows.Forms.Button();
             this.dtgrd_Inventory = new System.Windows.Forms.DataGridView();
-            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Barcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.POS = new System.Windows.Forms.TabPage();
             this.btn_setScanner = new System.Windows.Forms.Button();
             this.btn_startScan = new System.Windows.Forms.Button();
             this.grpbx_summary = new System.Windows.Forms.GroupBox();
             this.lbl_totalItems = new System.Windows.Forms.Label();
             this.txtbx_total = new System.Windows.Forms.TextBox();
+            this.btn_cancelTransaction = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
             this.btn_quantity = new System.Windows.Forms.Button();
             this.btn_finalize = new System.Windows.Forms.Button();
@@ -70,9 +68,14 @@
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.ststrplbl_Datetime = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btn_cancelTransaction = new System.Windows.Forms.Button();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Barcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ststrplbl_Port = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ststrplbl_IP = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1.SuspendLayout();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -85,19 +88,37 @@
             this.groupBox3.SuspendLayout();
             this.grpbx_transactionList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).BeginInit();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ststrplbl_Datetime,
+            this.ststrplbl_Port,
+            this.ststrplbl_IP});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 627);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1017, 30);
+            this.statusStrip1.TabIndex = 1;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // ststrplbl_Datetime
+            // 
+            this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
+            this.ststrplbl_Datetime.Size = new System.Drawing.Size(92, 25);
+            this.ststrplbl_Datetime.Text = "Date Time";
             // 
             // Tbctrl_POS
             // 
             this.Tbctrl_POS.Controls.Add(this.Inventory);
             this.Tbctrl_POS.Controls.Add(this.POS);
             this.Tbctrl_POS.Controls.Add(this.History);
-            this.Tbctrl_POS.Location = new System.Drawing.Point(1, 0);
+            this.Tbctrl_POS.Location = new System.Drawing.Point(0, 5);
             this.Tbctrl_POS.Name = "Tbctrl_POS";
             this.Tbctrl_POS.SelectedIndex = 0;
-            this.Tbctrl_POS.Size = new System.Drawing.Size(1016, 624);
-            this.Tbctrl_POS.TabIndex = 0;
+            this.Tbctrl_POS.Size = new System.Drawing.Size(1016, 625);
+            this.Tbctrl_POS.TabIndex = 2;
             // 
             // Inventory
             // 
@@ -107,7 +128,7 @@
             this.Inventory.Location = new System.Drawing.Point(4, 29);
             this.Inventory.Name = "Inventory";
             this.Inventory.Padding = new System.Windows.Forms.Padding(3);
-            this.Inventory.Size = new System.Drawing.Size(1008, 591);
+            this.Inventory.Size = new System.Drawing.Size(1008, 592);
             this.Inventory.TabIndex = 0;
             this.Inventory.Text = "Inventory";
             this.Inventory.UseVisualStyleBackColor = true;
@@ -185,7 +206,7 @@
             this.btn_commit.Size = new System.Drawing.Size(69, 64);
             this.btn_commit.TabIndex = 1;
             this.btn_commit.UseVisualStyleBackColor = true;
-            this.btn_commit.Click += new System.EventHandler(this.button1_Click);
+            this.btn_commit.Click += new System.EventHandler(this.btn_commit_Click);
             // 
             // dtgrd_Inventory
             // 
@@ -200,51 +221,8 @@
             this.dtgrd_Inventory.Name = "dtgrd_Inventory";
             this.dtgrd_Inventory.RowTemplate.Height = 28;
             this.dtgrd_Inventory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgrd_Inventory.Size = new System.Drawing.Size(694, 576);
+            this.dtgrd_Inventory.Size = new System.Drawing.Size(694, 580);
             this.dtgrd_Inventory.TabIndex = 0;
-            this.dtgrd_Inventory.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dtgrd_Inventory_CellValueChanged);
-            this.dtgrd_Inventory.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dtgrd_Inventory_RowLeave);
-            // 
-            // ID
-            // 
-            this.ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.ID.DataPropertyName = "ID";
-            this.ID.HeaderText = "ID";
-            this.ID.Name = "ID";
-            this.ID.ReadOnly = true;
-            this.ID.Width = 62;
-            // 
-            // Barcode
-            // 
-            this.Barcode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Barcode.DataPropertyName = "Barcode";
-            this.Barcode.HeaderText = "Barcode";
-            this.Barcode.Name = "Barcode";
-            this.Barcode.Width = 105;
-            // 
-            // Item
-            // 
-            this.Item.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Item.DataPropertyName = "Item";
-            this.Item.HeaderText = "Item";
-            this.Item.Name = "Item";
-            this.Item.Width = 77;
-            // 
-            // Price
-            // 
-            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Price.DataPropertyName = "Price";
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            this.Price.Width = 80;
-            // 
-            // Quantity
-            // 
-            this.Quantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Quantity.DataPropertyName = "Quantity";
-            this.Quantity.HeaderText = "Quantity";
-            this.Quantity.Name = "Quantity";
-            this.Quantity.Width = 104;
             // 
             // POS
             // 
@@ -260,7 +238,7 @@
             this.POS.Location = new System.Drawing.Point(4, 29);
             this.POS.Name = "POS";
             this.POS.Padding = new System.Windows.Forms.Padding(3);
-            this.POS.Size = new System.Drawing.Size(1008, 591);
+            this.POS.Size = new System.Drawing.Size(1008, 592);
             this.POS.TabIndex = 1;
             this.POS.Text = "Point Of Sale";
             this.POS.UseVisualStyleBackColor = true;
@@ -289,7 +267,7 @@
             // grpbx_summary
             // 
             this.grpbx_summary.Controls.Add(this.lbl_totalItems);
-            this.grpbx_summary.Location = new System.Drawing.Point(699, 432);
+            this.grpbx_summary.Location = new System.Drawing.Point(696, 427);
             this.grpbx_summary.Name = "grpbx_summary";
             this.grpbx_summary.Size = new System.Drawing.Size(309, 76);
             this.grpbx_summary.TabIndex = 12;
@@ -308,13 +286,24 @@
             // txtbx_total
             // 
             this.txtbx_total.BackColor = System.Drawing.SystemColors.MenuText;
-            this.txtbx_total.Font = new System.Drawing.Font("Courier New", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbx_total.Font = new System.Drawing.Font("Consolas", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
             this.txtbx_total.Location = new System.Drawing.Point(7, 11);
             this.txtbx_total.Name = "txtbx_total";
-            this.txtbx_total.Size = new System.Drawing.Size(682, 89);
+            this.txtbx_total.Size = new System.Drawing.Size(682, 92);
             this.txtbx_total.TabIndex = 11;
             this.txtbx_total.Text = "TOTAL     ₱0.00";
+            this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // btn_cancelTransaction
+            // 
+            this.btn_cancelTransaction.Location = new System.Drawing.Point(852, 4);
+            this.btn_cancelTransaction.Name = "btn_cancelTransaction";
+            this.btn_cancelTransaction.Size = new System.Drawing.Size(150, 132);
+            this.btn_cancelTransaction.TabIndex = 10;
+            this.btn_cancelTransaction.Text = "CANCEL TRANSACTION";
+            this.btn_cancelTransaction.UseVisualStyleBackColor = true;
+            this.btn_cancelTransaction.Click += new System.EventHandler(this.btn_clear_Click);
             // 
             // btn_delete
             // 
@@ -351,7 +340,7 @@
             this.dtrgd_POS.AllowUserToAddRows = false;
             this.dtrgd_POS.AllowUserToDeleteRows = false;
             this.dtrgd_POS.AllowUserToOrderColumns = true;
-            this.dtrgd_POS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtrgd_POS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dtrgd_POS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
@@ -361,41 +350,37 @@
             this.dtrgd_POS.Name = "dtrgd_POS";
             this.dtrgd_POS.RowTemplate.Height = 28;
             this.dtrgd_POS.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtrgd_POS.Size = new System.Drawing.Size(683, 481);
+            this.dtrgd_POS.Size = new System.Drawing.Size(683, 480);
             this.dtrgd_POS.TabIndex = 3;
             this.dtrgd_POS.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dtrgd_POS_RowsAdded);
             // 
             // dataGridViewTextBoxColumn1
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn1.DataPropertyName = "Barcode";
             this.dataGridViewTextBoxColumn1.HeaderText = "Barcode";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Width = 105;
             // 
             // dataGridViewTextBoxColumn2
             // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn2.DataPropertyName = "Item";
             this.dataGridViewTextBoxColumn2.HeaderText = "Item";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 77;
             // 
             // dataGridViewTextBoxColumn4
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn4.DataPropertyName = "Quantity";
             this.dataGridViewTextBoxColumn4.HeaderText = "Quantity";
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.Width = 104;
             // 
             // dataGridViewTextBoxColumn3
             // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn3.DataPropertyName = "Price";
             this.dataGridViewTextBoxColumn3.HeaderText = "Price";
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.Width = 80;
             // 
             // History
             // 
@@ -405,7 +390,7 @@
             this.History.Location = new System.Drawing.Point(4, 29);
             this.History.Name = "History";
             this.History.Padding = new System.Windows.Forms.Padding(3);
-            this.History.Size = new System.Drawing.Size(1008, 591);
+            this.History.Size = new System.Drawing.Size(1008, 575);
             this.History.TabIndex = 2;
             this.History.Text = "History";
             this.History.UseVisualStyleBackColor = true;
@@ -470,7 +455,6 @@
             this.lstbx_transactions.Name = "lstbx_transactions";
             this.lstbx_transactions.Size = new System.Drawing.Size(272, 404);
             this.lstbx_transactions.TabIndex = 0;
-            this.lstbx_transactions.SelectedIndexChanged += new System.EventHandler(this.lstbx_transactions_SelectedIndexChanged);
             // 
             // dtgrd_transactions
             // 
@@ -529,33 +513,53 @@
             this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             this.dataGridViewTextBoxColumn9.Width = 104;
             // 
-            // statusStrip1
+            // ID
             // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ststrplbl_Datetime});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 627);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.statusStrip1.Size = new System.Drawing.Size(1017, 30);
-            this.statusStrip1.TabIndex = 1;
-            this.statusStrip1.Text = "statusStrip1";
+            this.ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ID.DataPropertyName = "ID";
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
             // 
-            // ststrplbl_Datetime
+            // Barcode
             // 
-            this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
-            this.ststrplbl_Datetime.Size = new System.Drawing.Size(179, 25);
-            this.ststrplbl_Datetime.Text = "toolStripStatusLabel1";
+            this.Barcode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Barcode.DataPropertyName = "Barcode";
+            this.Barcode.HeaderText = "Barcode";
+            this.Barcode.Name = "Barcode";
             // 
-            // btn_cancelTransaction
+            // Item
             // 
-            this.btn_cancelTransaction.Location = new System.Drawing.Point(852, 4);
-            this.btn_cancelTransaction.Name = "btn_cancelTransaction";
-            this.btn_cancelTransaction.Size = new System.Drawing.Size(150, 132);
-            this.btn_cancelTransaction.TabIndex = 10;
-            this.btn_cancelTransaction.Text = "CANCEL TRANSACTION";
-            this.btn_cancelTransaction.UseVisualStyleBackColor = true;
-            this.btn_cancelTransaction.Click += new System.EventHandler(this.btn_clear_Click);
+            this.Item.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Item.DataPropertyName = "Item";
+            this.Item.HeaderText = "Item";
+            this.Item.Name = "Item";
+            // 
+            // Price
+            // 
+            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Price.DataPropertyName = "Price";
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            // 
+            // Quantity
+            // 
+            this.Quantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Quantity.DataPropertyName = "Quantity";
+            this.Quantity.HeaderText = "Quantity";
+            this.Quantity.Name = "Quantity";
+            // 
+            // ststrplbl_Port
+            // 
+            this.ststrplbl_Port.Name = "ststrplbl_Port";
+            this.ststrplbl_Port.Size = new System.Drawing.Size(44, 25);
+            this.ststrplbl_Port.Text = "Port";
+            // 
+            // ststrplbl_IP
+            // 
+            this.ststrplbl_IP.Name = "ststrplbl_IP";
+            this.ststrplbl_IP.Size = new System.Drawing.Size(97, 25);
+            this.ststrplbl_IP.Text = "IP Address";
             // 
             // FRM_Main
             // 
@@ -563,12 +567,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1017, 657);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.Tbctrl_POS);
+            this.Controls.Add(this.statusStrip1);
             this.Name = "FRM_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.Tbctrl_POS.ResumeLayout(false);
             this.Inventory.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -585,60 +591,59 @@
             this.groupBox3.PerformLayout();
             this.grpbx_transactionList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).EndInit();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl Tbctrl_POS;
-        private System.Windows.Forms.TabPage Inventory;
-        private System.Windows.Forms.TabPage POS;
-        private System.Windows.Forms.DataGridView dtgrd_Inventory;
-        private System.Windows.Forms.Button btn_commit;
-        private System.Windows.Forms.DataGridView dtrgd_POS;
-        private System.Windows.Forms.Button btn_delete;
-        private System.Windows.Forms.Button btn_quantity;
-        private System.Windows.Forms.Button btn_finalize;
-        private System.Windows.Forms.TextBox txtbx_total;
-        private System.Windows.Forms.GroupBox grpbx_summary;
-        private System.Windows.Forms.Label lbl_totalItems;
-        private System.Windows.Forms.Button btn_setScanner;
-        private System.Windows.Forms.Button btn_startScan;
-        private System.Windows.Forms.GroupBox grpbx_DBActions;
-        private System.Windows.Forms.Button btn_Del;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel ststrplbl_Datetime;
+        private System.Windows.Forms.TabControl Tbctrl_POS;
+        private System.Windows.Forms.TabPage Inventory;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cmbbx_searchMode;
         private System.Windows.Forms.TextBox txtbx_searchBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Barcode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Item;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
+        private System.Windows.Forms.GroupBox grpbx_DBActions;
+        private System.Windows.Forms.Button btn_Del;
+        private System.Windows.Forms.Button btn_commit;
+        private System.Windows.Forms.DataGridView dtgrd_Inventory;
+        private System.Windows.Forms.TabPage POS;
+        private System.Windows.Forms.Button btn_setScanner;
+        private System.Windows.Forms.Button btn_startScan;
+        private System.Windows.Forms.GroupBox grpbx_summary;
+        private System.Windows.Forms.Label lbl_totalItems;
+        private System.Windows.Forms.TextBox txtbx_total;
+        private System.Windows.Forms.Button btn_cancelTransaction;
+        private System.Windows.Forms.Button btn_delete;
+        private System.Windows.Forms.Button btn_quantity;
+        private System.Windows.Forms.Button btn_finalize;
+        private System.Windows.Forms.DataGridView dtrgd_POS;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.TabPage History;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ComboBox cmbbx_searchCategory;
+        private System.Windows.Forms.TextBox txtbx_searchKey;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox grpbx_transactionList;
+        private System.Windows.Forms.ListBox lstbx_transactions;
         private System.Windows.Forms.DataGridView dtgrd_transactions;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.GroupBox grpbx_transactionList;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox cmbbx_searchCategory;
-        private System.Windows.Forms.TextBox txtbx_searchKey;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox lstbx_transactions;
-        private System.Windows.Forms.Button btn_cancelTransaction;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Barcode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Item;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Price;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
+        private System.Windows.Forms.ToolStripStatusLabel ststrplbl_Port;
+        private System.Windows.Forms.ToolStripStatusLabel ststrplbl_IP;
     }
 }
 
