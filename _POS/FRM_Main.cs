@@ -13,6 +13,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Net.Sockets;
 using System.Net;
+using DGVPrinterHelper;
 
 
 namespace _POS
@@ -337,12 +338,16 @@ namespace _POS
             {
                 transactionCounter++;
                 buildDataTable(dtrgd_POS, dt, tableName);
-
             }
             else
             {
                 //making sure nothing happens. 
             }
+        }
+
+        public void printReceipt(DataGridView grid)
+        {
+
         }
 
         private void btn_commit_Click(object sender, EventArgs e)

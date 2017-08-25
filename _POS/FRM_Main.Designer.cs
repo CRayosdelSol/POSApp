@@ -48,11 +48,12 @@
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.POS = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtbx_total = new System.Windows.Forms.TextBox();
             this.btn_setScanner = new System.Windows.Forms.Button();
             this.btn_startScan = new System.Windows.Forms.Button();
             this.grpbx_summary = new System.Windows.Forms.GroupBox();
             this.lbl_totalItems = new System.Windows.Forms.Label();
-            this.txtbx_total = new System.Windows.Forms.TextBox();
             this.btn_cancelTransaction = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
             this.btn_quantity = new System.Windows.Forms.Button();
@@ -75,7 +76,6 @@
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
@@ -83,13 +83,13 @@
             this.grpbx_DBActions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_Inventory)).BeginInit();
             this.POS.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.grpbx_summary.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtrgd_POS)).BeginInit();
             this.History.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.grpbx_transactionList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).BeginInit();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -293,6 +293,28 @@
             this.POS.Text = "Point Of Sale";
             this.POS.UseVisualStyleBackColor = true;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Black;
+            this.panel1.Controls.Add(this.txtbx_total);
+            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(684, 94);
+            this.panel1.TabIndex = 16;
+            // 
+            // txtbx_total
+            // 
+            this.txtbx_total.BackColor = System.Drawing.SystemColors.MenuText;
+            this.txtbx_total.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtbx_total.Font = new System.Drawing.Font("Consolas", 26F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
+            this.txtbx_total.Location = new System.Drawing.Point(-7, 19);
+            this.txtbx_total.Name = "txtbx_total";
+            this.txtbx_total.Size = new System.Drawing.Size(682, 61);
+            this.txtbx_total.TabIndex = 11;
+            this.txtbx_total.Text = "TOTAL     ₱0.00";
+            this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // btn_setScanner
             // 
             this.btn_setScanner.Location = new System.Drawing.Point(697, 280);
@@ -332,19 +354,6 @@
             this.lbl_totalItems.Size = new System.Drawing.Size(143, 20);
             this.lbl_totalItems.TabIndex = 0;
             this.lbl_totalItems.Text = "Total No. of Items:-";
-            // 
-            // txtbx_total
-            // 
-            this.txtbx_total.BackColor = System.Drawing.SystemColors.MenuText;
-            this.txtbx_total.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtbx_total.Font = new System.Drawing.Font("Consolas", 26F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
-            this.txtbx_total.Location = new System.Drawing.Point(-7, 19);
-            this.txtbx_total.Name = "txtbx_total";
-            this.txtbx_total.Size = new System.Drawing.Size(682, 61);
-            this.txtbx_total.TabIndex = 11;
-            this.txtbx_total.Text = "TOTAL     ₱0.00";
-            this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // btn_cancelTransaction
             // 
@@ -391,6 +400,8 @@
             this.dtrgd_POS.AllowUserToAddRows = false;
             this.dtrgd_POS.AllowUserToDeleteRows = false;
             this.dtrgd_POS.AllowUserToOrderColumns = true;
+            this.dtrgd_POS.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dtrgd_POS.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dtrgd_POS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dtrgd_POS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
@@ -565,15 +576,6 @@
             this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             this.dataGridViewTextBoxColumn9.Width = 104;
             // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.txtbx_total);
-            this.panel1.Location = new System.Drawing.Point(6, 6);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(684, 94);
-            this.panel1.TabIndex = 16;
-            // 
             // FRM_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -595,6 +597,8 @@
             this.grpbx_DBActions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_Inventory)).EndInit();
             this.POS.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.grpbx_summary.ResumeLayout(false);
             this.grpbx_summary.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtrgd_POS)).EndInit();
@@ -603,8 +607,6 @@
             this.groupBox3.PerformLayout();
             this.grpbx_transactionList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgrd_transactions)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
