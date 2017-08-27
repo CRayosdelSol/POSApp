@@ -52,6 +52,7 @@ namespace _POS
             
             initializeDataGrid();
             dtgrd_Inventory.AutoGenerateColumns = false;
+            dtgrd_transactions.AutoGenerateColumns = false;
             Timer tmr = new Timer();
             tmr.Interval = 1000; // ticks every 1 second
             tmr.Tick += new EventHandler(updateTime);
@@ -96,17 +97,10 @@ namespace _POS
                 Db.CreateDatabase(filepath);
             }
 
-            tableName = string.Format("[TRANSACTION_{0}_{1}]", DateTime.Now.ToString("MM_dd_yyyy_hh_mm"), transactionCounter);
+            tableName = string.Format("[TRANSACTION-{0}({1})]", DateTime.Now.ToString("MM-dd-yyyy-hh-mm"), transactionCounter);
 
 
             Db.CreateTable("Items", "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
-            //Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
-
-            //dt = new DataTable(tableName);
-            //dt.Columns.Add("Barcode",Type.GetType("System.String"));
-            //dt.Columns.Add("Item", Type.GetType("System.String"));
-            //dt.Columns.Add("Price", Type.GetType("System.String"));
-            //dt.Columns.Add("Quantity", Type.GetType("System.String"));
 
             bindDatasource(dtgrd_Inventory,"Items");
             scaleComponents(dtgrd_Inventory);
@@ -118,7 +112,7 @@ namespace _POS
             try
             {
                 sqlConnection = new SqlConnection(connString);
-                string command = "SELECT * FROM " + tableName;
+                string command = "SELECT * FROM [" + tableName + "]";
                 sqlComm = new SqlCommand(command, sqlConnection);
                 da = new SqlDataAdapter(sqlComm);
                 ds = new DataSet();
@@ -202,7 +196,11 @@ namespace _POS
             totalPrice = 0;
             totalQuantity = 0;
 
-            foreach(DataGridViewRow row in dtrgd_POS.Rows)
+            btnG_DeleteItems.Enabled = true;
+            btnG_Finalize.Enabled = true;
+            btnG_CancelTransaction.Enabled = true;
+
+            foreach (DataGridViewRow row in dtrgd_POS.Rows)
             {
                 if (row.Cells[0].Value.ToString() != "TOTAL")
                 {
@@ -284,8 +282,24 @@ namespace _POS
             if (dialogResult == DialogResult.Yes)
             {
                 transactionCounter++;
+                tableName = string.Format("[TRANSACTION-{0}({1})]", DateTime.Now.ToString("MM-dd-yyyy-hh-mm"), transactionCounter);
                 dtrgd_POS.Rows.Add(new object[] { "TOTAL", string.Empty, totalQuantity.ToString(), totalPrice.ToString() });
                 buildDataTable(dtrgd_POS, dt, tableName);
+
+                //Reset everything that is involved in the transaction process.
+                totalQuantity = 0;
+                dtrgd_POS.Rows.Clear();
+                dtrgd_POS.Refresh();
+                lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
+                txtbx_total.Text = "TOTAL     ₱0.00";
+
+                //Update the list of previous transactions
+                listPreviousTransactions();
+                
+                //Disable controls that are related to the transaction process as the grid is empty.
+                btnG_DeleteItems.Enabled = false;
+                btnG_Finalize.Enabled = false;
+                btnG_CancelTransaction.Enabled = false;
             }
             else
             {
@@ -308,6 +322,10 @@ namespace _POS
                 dtrgd_POS.Refresh();
                 lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
                 txtbx_total.Text = "TOTAL     ₱0.00";
+
+                btnG_DeleteItems.Enabled = false;
+                btnG_Finalize.Enabled = false;
+                btnG_CancelTransaction.Enabled = false;
             }
             else
             {
@@ -426,6 +444,22 @@ namespace _POS
             });
         }
 
+        private void dtrgd_POS_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            if (dtrgd_POS.RowCount >= 1)
+            {
+                btnG_DeleteItems.Enabled = true;
+                btnG_Finalize.Enabled = true;
+                btnG_CancelTransaction.Enabled = true;
+            }
+            else
+            {
+                btnG_DeleteItems.Enabled = false;
+                btnG_Finalize.Enabled = false;
+                btnG_CancelTransaction.Enabled = false;
+            }
+        }
+
         private void btnG_DeleteItems_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Are you sure you wish to delete the selected items?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -502,13 +536,13 @@ namespace _POS
             var prc = string.Empty;
             object[] items = null;
 
-            Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
+            Db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item", "varchar(255)", "Quantity", "varchar(255)", "Price", "varchar(255)");
 
             dt = new DataTable(tableName);
             dt.Columns.Add("Barcode", Type.GetType("System.String"));
             dt.Columns.Add("Item", Type.GetType("System.String"));
-            dt.Columns.Add("Price", Type.GetType("System.String"));
             dt.Columns.Add("Quantity", Type.GetType("System.String"));
+            dt.Columns.Add("Price", Type.GetType("System.String"));
 
             foreach (DataGridViewRow row in grid.Rows)
             {
@@ -519,8 +553,6 @@ namespace _POS
                 items = new object[] { brcd, itm, qnty, prc };
                 dt.Rows.Add(items);
             }
-
-            dt.Rows.Add(new object[] { "TOTAL", string.Empty, string.Empty, totalPrice.ToString() });
 
             ds.Tables.Add(dt);
             Db.UpdateDataset(ds, tableName);
