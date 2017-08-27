@@ -16,6 +16,7 @@ using System.Net;
 using DGVPrinterHelper;
 
 
+
 namespace _POS
 {
     public partial class FRM_Main : Form
@@ -24,7 +25,6 @@ namespace _POS
         string tableName;
         protected string filepath;
         protected string connString;
-        protected bool isScanning;
         int transactionCounter;
 
         DataTable dt;
@@ -34,16 +34,17 @@ namespace _POS
         SqlDataReader reader;
         SqlConnection sqlConnection;
         SqlCommand sqlComm;
-
+        
         internal int specificQuantity, totalQuantity;
-        internal decimal totalPrice;
+        internal decimal totalPrice, taxMultiplier;
         internal string IPAddressHolder;
         internal Int32 PortNumber;
-        internal bool specified_Quantity, setScannerSettings;
+        internal bool specified_Quantity, haveSpecificTaxMultiplier, scannerSettingsAreSet, isScanning;
 
         public FRM_Main()
         {
             InitializeComponent();
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -58,6 +59,12 @@ namespace _POS
             cmbbx_searchMode.SelectedIndex = 0;
             scaleComponents(dtgrd_Inventory);
             listPreviousTransactions();
+
+            btn_startScan.Enabled = false;
+            ststrplbl_Port.Text = string.Format("Port: {0}", "Not Set");
+            ststrplbl_IP.Text = string.Format("I.P. Address: {0}", "Not Set");
+            lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier: {0}", "Not Set");
+            lbl_totalItems.Text = string.Format("Current Total No. of Items: {0}", 0);
         }
 
         public void scaleComponents(DataGridView grid)
@@ -66,14 +73,12 @@ namespace _POS
             this.MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-
-
-
         }
 
         #region Inventory Bits
         public void initializeDataGrid()
         {
+            
             dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\ProjectFiles\";
             filepath = dir + "Inventory.mdf";
 
@@ -144,45 +149,6 @@ namespace _POS
             ststrplbl_Datetime.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm tt");
         }
 
-        private void btn_clear_Click(object sender, EventArgs e)
-        {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to cancel this transaction?", "Cancel Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
-            {
-                totalQuantity = 0;
-                dtrgd_POS.Rows.Clear();
-                dtrgd_POS.Refresh();
-                lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
-                txtbx_total.Text = "TOTAL     ₱0.00";
-            }
-            else
-            {
-                //Just making sure nothing happens.
-            }
-        }
-
-        private void btn_delete_Click(object sender, EventArgs e)
-        {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to delete the selected items?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
-            {
-                foreach (DataGridViewRow selectedRow in dtrgd_POS.SelectedRows)
-                {
-                    dtrgd_POS.Rows.Remove(selectedRow);
-                }
-            }
-            else
-            {
-                //do nothing.
-            }
-        }
-
-        private void btn_quantity_Click(object sender, EventArgs e)
-        {
-            FRM_Quantity quantityFrm = new FRM_Quantity(this);
-            quantityFrm.ShowDialog();
-        }
-
         private void cmbbx_searchMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtbx_searchBox.Select();
@@ -238,29 +204,22 @@ namespace _POS
 
             foreach(DataGridViewRow row in dtrgd_POS.Rows)
             {
-                totalQuantity += Convert.ToInt32(row.Cells[2].Value);
-                totalPrice += Convert.ToDecimal(row.Cells[3].Value);
+                if (row.Cells[0].Value.ToString() != "TOTAL")
+                {
+                    totalQuantity += Convert.ToInt32(row.Cells[2].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[3].Value);
+
+                    if (haveSpecificTaxMultiplier)
+                    {
+                        totalPrice += totalPrice * taxMultiplier;
+                    }
+
+                }
             }
 
             //Display the total cost in terms of Philippine Peso
             txtbx_total.Text = "TOTAL:   " +  totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
             lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
-        }
-
-        private void btn_setScanner_Click(object sender, EventArgs e)
-        {
-            FRM_IPAddSettings frm_IpAddSettings = new FRM_IPAddSettings(this);
-            frm_IpAddSettings.ShowDialog();
-            if (setScannerSettings)
-            {
-                btn_startScan.Enabled = true;
-                ststrplbl_Port.Text = string.Format("Port: {0}", PortNumber);
-                ststrplbl_IP.Text = string.Format("I.P. Address: {0}", IPAddressHolder);
-            }
-            else
-            {
-                btn_startScan.Enabled = false;
-            }
         }
 
         public void Scan()
@@ -298,28 +257,11 @@ namespace _POS
             {
                 server.Stop();
                 isScanning = false;
-                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = true; }));
-                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Text = "START SCANNING"; }));
+                btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Enabled = true; }));
+                btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Label = string.Format("{0}\n{1}", "START", "SCANNING"); }));
             }
+            //bring me back
 
-
-        }
-
-        private async void btn_startScan_Click(object sender, EventArgs e)
-        {
-            /*Return control to the caller until the scanning process is completed.
-            This will keep the UI functional while any received data is being pro-
-            cessed.*/
-            await Task.Run(() =>
-            {
-                isScanning = true;
-                while (isScanning)
-                {
-                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = false; }));
-                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Text = "SCANNING"; }));
-                    Scan();
-                }
-            });
         }
 
         private void lstbx_transactions_SelectedIndexChanged(object sender, EventArgs e)
@@ -331,12 +273,18 @@ namespace _POS
             }
         }
 
-        private void btn_finalize_Click(object sender, EventArgs e)
+        public void printReceipt(DataGridView grid)
+        {
+
+        }
+
+        private void btnG_Finalize_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Are you sure you wish to finalize this transaction?", "Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
                 transactionCounter++;
+                dtrgd_POS.Rows.Add(new object[] { "TOTAL", string.Empty, totalQuantity.ToString(), totalPrice.ToString() });
                 buildDataTable(dtrgd_POS, dt, tableName);
             }
             else
@@ -345,9 +293,153 @@ namespace _POS
             }
         }
 
-        public void printReceipt(DataGridView grid)
+        private void btnG_CancelTransaction_Load(object sender, EventArgs e)
         {
+            btnG_CancelTransaction.Label = string.Format("{0}\n{1}", "CANCEL", "TRANSACTION");
+        }
 
+        private void btnG_CancelTransaction_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to cancel this transaction?", "Cancel Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                totalQuantity = 0;
+                dtrgd_POS.Rows.Clear();
+                dtrgd_POS.Refresh();
+                lbl_totalItems.Text = string.Format("Total Number of Items: {0}", totalQuantity);
+                txtbx_total.Text = "TOTAL     ₱0.00";
+            }
+            else
+            {
+                //Just making sure nothing happens.
+            }
+        }
+
+        private void btnG_Finalize_Load(object sender, EventArgs e)
+        {
+            btnG_Finalize.Label = string.Format("{0}\n{1}", "FINALIZE", "TRANSACTION");
+        }
+
+        private void btnG_DeleteItems_Load(object sender, EventArgs e)
+        {
+            btnG_DeleteItems.Label = string.Format("{0}\n{1}", "DELETE", "ITEM(S)");
+        }
+
+        private void btnG_TaxMultiplier_Load(object sender, EventArgs e)
+        {
+            btnG_TaxMultiplier.Label = string.Format("{0}\n{1}", "TAX", "MULTIPLIER");
+        }
+
+        private void btnG_TaxMultiplier_Click(object sender, EventArgs e)
+        {
+            haveSpecificTaxMultiplier = false;
+            FRM_TaxSettings taxSetFrm = new FRM_TaxSettings(this);
+            taxSetFrm.ShowDialog();
+            if (haveSpecificTaxMultiplier)
+            {
+                lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier:{0}%", (taxMultiplier*100).ToString());
+            }
+            else
+            {
+                lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier:{0}", "Not Set");
+            }
+        }
+
+        private void btnG_Quantity_Click(object sender, EventArgs e)
+        {
+            FRM_Quantity quantityFrm = new FRM_Quantity(this);
+            quantityFrm.ShowDialog();
+        }
+
+        private void btnG_ScannerSettings_Load(object sender, EventArgs e)
+        {
+            btnG_ScannerSettings.Label = string.Format("{0}\n{1}", "SCANNER", "SETTINGS");
+        }
+
+        private void btnG_ScannerSettings_Click(object sender, EventArgs e)
+        {
+            if (scannerSettingsAreSet)
+            {
+                DialogResult dialogResult = MessageBox.Show("You have previously specified the settings to be used for your external barcode scanner. Do you wish to set them again?", "Set Scanner Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    FRM_IPAddSettings frm_IpAddSettings = new FRM_IPAddSettings(this);
+                    frm_IpAddSettings.ShowDialog();
+                    if (scannerSettingsAreSet)
+                    {
+                        btnG_StartScanning.Enabled = true;
+                        ststrplbl_Port.Text = string.Format("Port: {0}", PortNumber);
+                        ststrplbl_IP.Text = string.Format("I.P. Address: {0}", IPAddressHolder);
+                    }
+                    else
+                    {
+                        btnG_StartScanning.Enabled = false;
+                        ststrplbl_Port.Text = string.Format("Port: {0}", "Not Set");
+                        ststrplbl_IP.Text = string.Format("I.P. Address: {0}", "Not Set");
+                    }
+                }
+                else
+                {
+                    //just making sure nothing happens.
+                }
+            }
+            else
+            {
+                FRM_IPAddSettings frm_IpAddSettings = new FRM_IPAddSettings(this);
+                frm_IpAddSettings.ShowDialog();
+
+                if (scannerSettingsAreSet)
+                {
+                    btnG_StartScanning.Enabled = true;
+                    ststrplbl_Port.Text = string.Format("Port: {0}", PortNumber);
+                    ststrplbl_IP.Text = string.Format("I.P. Address: {0}", IPAddressHolder);
+                }
+                else
+                {
+                    btnG_StartScanning.Enabled = false;
+                    ststrplbl_Port.Text = string.Format("Port: {0}", "Not Set");
+                    ststrplbl_IP.Text = string.Format("I.P. Address: {0}", "Not Set");
+                }
+            }
+        }
+
+        private void btnG_StartScanning_Load(object sender, EventArgs e)
+        {
+            btnG_StartScanning.Label = string.Format("{0}\n{1}", "START", "SCANNING");
+        }
+
+        private async void btnG_StartScanning_Click(object sender, EventArgs e)
+        {
+            /*Return control to the caller until the scanning process is completed.
+            This will keep the UI functional while any received data is being pro-
+            cessed.*/
+            await Task.Run(() =>
+            {
+                isScanning = true;
+                while (isScanning)
+                {
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Enabled = false; }));
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Label = "SCANNING"; }));
+                    Scan();
+                }
+            });
+        }
+
+        private void btnG_DeleteItems_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to delete the selected items?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                foreach (DataGridViewRow selectedRow in dtrgd_POS.SelectedRows)
+                {
+                    dtrgd_POS.Rows.Remove(selectedRow);
+                }
+            }
+            else
+            {
+                //do nothing.
+            }
         }
 
         private void btn_commit_Click(object sender, EventArgs e)

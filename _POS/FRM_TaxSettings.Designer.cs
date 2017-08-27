@@ -1,6 +1,6 @@
 ﻿namespace _POS
 {
-    partial class FRM_Quantity
+    partial class FRM_TaxSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -29,64 +29,62 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.btn_ok = new System.Windows.Forms.Button();
-            this.txtbx_Quantity = new System.Windows.Forms.TextBox();
+            this.txtbx_taxMultiplier = new System.Windows.Forms.TextBox();
             this.btn_cancel = new System.Windows.Forms.Button();
+            this.btn_OK = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(46, 29);
+            this.label1.Location = new System.Drawing.Point(12, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(115, 20);
+            this.label1.Size = new System.Drawing.Size(247, 20);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Enter Quantity:";
+            this.label1.Text = "Enter a value for the tax multiplier:";
             // 
-            // btn_ok
+            // txtbx_taxMultiplier
             // 
-            this.btn_ok.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btn_ok.Enabled = false;
-            this.btn_ok.Location = new System.Drawing.Point(182, 80);
-            this.btn_ok.Name = "btn_ok";
-            this.btn_ok.Size = new System.Drawing.Size(116, 43);
-            this.btn_ok.TabIndex = 2;
-            this.btn_ok.Text = "OK";
-            this.btn_ok.UseVisualStyleBackColor = true;
-            this.btn_ok.Click += new System.EventHandler(this.btn_Quantity_Click);
-            // 
-            // txtbx_Quantity
-            // 
-            this.txtbx_Quantity.Location = new System.Drawing.Point(171, 26);
-            this.txtbx_Quantity.Name = "txtbx_Quantity";
-            this.txtbx_Quantity.Size = new System.Drawing.Size(127, 26);
-            this.txtbx_Quantity.TabIndex = 1;
-            this.txtbx_Quantity.TextChanged += new System.EventHandler(this.txtbx_Quantity_TextChanged);
+            this.txtbx_taxMultiplier.Location = new System.Drawing.Point(256, 19);
+            this.txtbx_taxMultiplier.Name = "txtbx_taxMultiplier";
+            this.txtbx_taxMultiplier.Size = new System.Drawing.Size(116, 26);
+            this.txtbx_taxMultiplier.TabIndex = 1;
+            this.txtbx_taxMultiplier.TextChanged += new System.EventHandler(this.txtbx_taxMultiplier_TextChanged);
             // 
             // btn_cancel
             // 
-            this.btn_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_cancel.Location = new System.Drawing.Point(34, 80);
+            this.btn_cancel.Location = new System.Drawing.Point(71, 56);
             this.btn_cancel.Name = "btn_cancel";
-            this.btn_cancel.Size = new System.Drawing.Size(116, 43);
-            this.btn_cancel.TabIndex = 3;
+            this.btn_cancel.Size = new System.Drawing.Size(99, 43);
+            this.btn_cancel.TabIndex = 2;
             this.btn_cancel.Text = "CANCEL";
             this.btn_cancel.UseVisualStyleBackColor = true;
             this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
             // 
-            // FRM_Quantity
+            // btn_OK
+            // 
+            this.btn_OK.Enabled = false;
+            this.btn_OK.Location = new System.Drawing.Point(210, 56);
+            this.btn_OK.Name = "btn_OK";
+            this.btn_OK.Size = new System.Drawing.Size(99, 43);
+            this.btn_OK.TabIndex = 3;
+            this.btn_OK.Text = "OK";
+            this.btn_OK.UseVisualStyleBackColor = true;
+            this.btn_OK.Click += new System.EventHandler(this.btn_OK_Click);
+            // 
+            // FRM_TaxSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(335, 135);
+            this.ClientSize = new System.Drawing.Size(384, 120);
             this.ControlBox = false;
+            this.Controls.Add(this.btn_OK);
             this.Controls.Add(this.btn_cancel);
-            this.Controls.Add(this.txtbx_Quantity);
-            this.Controls.Add(this.btn_ok);
+            this.Controls.Add(this.txtbx_taxMultiplier);
             this.Controls.Add(this.label1);
-            this.Name = "FRM_Quantity";
+            this.Name = "FRM_TaxSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Specify Item Quantity";
+            this.Text = "Tax Multiplier Settings";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,8 +93,8 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btn_ok;
-        private System.Windows.Forms.TextBox txtbx_Quantity;
+        private System.Windows.Forms.TextBox txtbx_taxMultiplier;
         private System.Windows.Forms.Button btn_cancel;
+        private System.Windows.Forms.Button btn_OK;
     }
 }

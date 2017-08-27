@@ -38,5 +38,18 @@ namespace _POS
             mainFrm.specified_Quantity = false;
             Close();
         }
+
+        private void txtbx_Quantity_TextChanged(object sender, EventArgs e)
+        {
+            if(txtbx_Quantity.Text == string.Empty)
+            {
+                btn_ok.Enabled = false;
+            }
+            else
+            {
+                btn_ok.Enabled = true;
+
+            }
+        }
     }
 }

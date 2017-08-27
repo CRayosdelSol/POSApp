@@ -34,13 +34,13 @@ namespace _POS
         {
             mainForm.IPAddressHolder = string.Format("{0}.{1}.{2}.{3}", txtbx_netAddA.Text, txtbx_netAddB.Text, txtbx_netAddC.Text, txtbx_netAddD.Text);
             mainForm.PortNumber = Int32.Parse(txtbx_portNum.Text);
-            mainForm.setScannerSettings = true;
+            mainForm.scannerSettingsAreSet = true;
             Close();
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            mainForm.setScannerSettings = false;
+            mainForm.scannerSettingsAreSet = false;
             
         }
 

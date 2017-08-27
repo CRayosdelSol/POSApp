@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FRM_Main));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ststrplbl_Datetime = new System.Windows.Forms.ToolStripStatusLabel();
             this.ststrplbl_Port = new System.Windows.Forms.ToolStripStatusLabel();
@@ -48,16 +49,13 @@
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.POS = new System.Windows.Forms.TabPage();
+            this.btnG_Finalize = new _POS.btnG_Finalize();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txtbx_total = new System.Windows.Forms.TextBox();
-            this.btn_setScanner = new System.Windows.Forms.Button();
             this.btn_startScan = new System.Windows.Forms.Button();
             this.grpbx_summary = new System.Windows.Forms.GroupBox();
+            this.lbl_CurrentTaxMult = new System.Windows.Forms.Label();
             this.lbl_totalItems = new System.Windows.Forms.Label();
-            this.btn_cancelTransaction = new System.Windows.Forms.Button();
-            this.btn_delete = new System.Windows.Forms.Button();
-            this.btn_quantity = new System.Windows.Forms.Button();
-            this.btn_finalize = new System.Windows.Forms.Button();
             this.dtrgd_POS = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -76,6 +74,13 @@
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnG_Placeholder1 = new _POS.btnG_Placeholder();
+            this.btnG_CancelTransaction = new _POS.btnG_CancelTransaction();
+            this.btnG_ScannerSettings = new _POS.btnG_ScannerSettings();
+            this.btnG_StartScanning = new _POS.btnG_StartScanning();
+            this.btnG_DeleteItems = new _POS.btnG_DeleteItems();
+            this.btnG_TaxMultiplier = new _POS.btnG_TaxMultiplier();
+            this.btnG_Quantity = new _POS.btnG_Quantity();
             this.statusStrip1.SuspendLayout();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
@@ -94,6 +99,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(50)))), ((int)(((byte)(53)))));
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ststrplbl_Datetime,
@@ -107,18 +113,21 @@
             // 
             // ststrplbl_Datetime
             // 
+            this.ststrplbl_Datetime.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
             this.ststrplbl_Datetime.Size = new System.Drawing.Size(92, 25);
             this.ststrplbl_Datetime.Text = "Date Time";
             // 
             // ststrplbl_Port
             // 
+            this.ststrplbl_Port.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_Port.Name = "ststrplbl_Port";
             this.ststrplbl_Port.Size = new System.Drawing.Size(44, 25);
             this.ststrplbl_Port.Text = "Port";
             // 
             // ststrplbl_IP
             // 
+            this.ststrplbl_IP.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_IP.Name = "ststrplbl_IP";
             this.ststrplbl_IP.Size = new System.Drawing.Size(97, 25);
             this.ststrplbl_IP.Text = "IP Address";
@@ -204,7 +213,7 @@
             // 
             // btn_Del
             // 
-            this.btn_Del.Image = global::_POS.Properties.Resources.DeleteCell_16x;
+            this.btn_Del.Image = ((System.Drawing.Image)(resources.GetObject("btn_Del.Image")));
             this.btn_Del.Location = new System.Drawing.Point(95, 37);
             this.btn_Del.Name = "btn_Del";
             this.btn_Del.Size = new System.Drawing.Size(69, 64);
@@ -214,7 +223,7 @@
             // 
             // btn_commit
             // 
-            this.btn_commit.Image = global::_POS.Properties.Resources.Save_16x;
+            this.btn_commit.Image = ((System.Drawing.Image)(resources.GetObject("btn_commit.Image")));
             this.btn_commit.Location = new System.Drawing.Point(20, 37);
             this.btn_commit.Name = "btn_commit";
             this.btn_commit.Size = new System.Drawing.Size(69, 64);
@@ -276,14 +285,17 @@
             // 
             // POS
             // 
+            this.POS.Controls.Add(this.btnG_Quantity);
+            this.POS.Controls.Add(this.btnG_TaxMultiplier);
+            this.POS.Controls.Add(this.btnG_DeleteItems);
+            this.POS.Controls.Add(this.btnG_StartScanning);
+            this.POS.Controls.Add(this.btnG_ScannerSettings);
+            this.POS.Controls.Add(this.btnG_CancelTransaction);
+            this.POS.Controls.Add(this.btnG_Placeholder1);
+            this.POS.Controls.Add(this.btnG_Finalize);
             this.POS.Controls.Add(this.panel1);
-            this.POS.Controls.Add(this.btn_setScanner);
             this.POS.Controls.Add(this.btn_startScan);
             this.POS.Controls.Add(this.grpbx_summary);
-            this.POS.Controls.Add(this.btn_cancelTransaction);
-            this.POS.Controls.Add(this.btn_delete);
-            this.POS.Controls.Add(this.btn_quantity);
-            this.POS.Controls.Add(this.btn_finalize);
             this.POS.Controls.Add(this.dtrgd_POS);
             this.POS.Location = new System.Drawing.Point(4, 29);
             this.POS.Name = "POS";
@@ -292,6 +304,19 @@
             this.POS.TabIndex = 1;
             this.POS.Text = "Point Of Sale";
             this.POS.UseVisualStyleBackColor = true;
+            // 
+            // btnG_Finalize
+            // 
+            this.btnG_Finalize.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnG_Finalize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_Finalize.ForeColor = System.Drawing.SystemColors.Info;
+            this.btnG_Finalize.Label = "FINALIZE";
+            this.btnG_Finalize.Location = new System.Drawing.Point(696, 6);
+            this.btnG_Finalize.Name = "btnG_Finalize";
+            this.btnG_Finalize.Size = new System.Drawing.Size(145, 110);
+            this.btnG_Finalize.TabIndex = 20;
+            this.btnG_Finalize.Load += new System.EventHandler(this.btnG_Finalize_Load);
+            this.btnG_Finalize.Click += new System.EventHandler(this.btnG_Finalize_Click);
             // 
             // panel1
             // 
@@ -315,85 +340,41 @@
             this.txtbx_total.Text = "TOTAL     ₱0.00";
             this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // btn_setScanner
-            // 
-            this.btn_setScanner.Location = new System.Drawing.Point(697, 280);
-            this.btn_setScanner.Name = "btn_setScanner";
-            this.btn_setScanner.Size = new System.Drawing.Size(150, 132);
-            this.btn_setScanner.TabIndex = 14;
-            this.btn_setScanner.Text = "SCNNER SETTINGS";
-            this.btn_setScanner.UseVisualStyleBackColor = true;
-            this.btn_setScanner.Click += new System.EventHandler(this.btn_setScanner_Click);
-            // 
             // btn_startScan
             // 
-            this.btn_startScan.Enabled = false;
-            this.btn_startScan.Location = new System.Drawing.Point(852, 280);
+            this.btn_startScan.Location = new System.Drawing.Point(0, 0);
             this.btn_startScan.Name = "btn_startScan";
-            this.btn_startScan.Size = new System.Drawing.Size(150, 132);
-            this.btn_startScan.TabIndex = 13;
-            this.btn_startScan.Text = "START SCANNING";
-            this.btn_startScan.UseVisualStyleBackColor = true;
-            this.btn_startScan.Click += new System.EventHandler(this.btn_startScan_Click);
+            this.btn_startScan.Size = new System.Drawing.Size(75, 23);
+            this.btn_startScan.TabIndex = 25;
             // 
             // grpbx_summary
             // 
+            this.grpbx_summary.Controls.Add(this.lbl_CurrentTaxMult);
             this.grpbx_summary.Controls.Add(this.lbl_totalItems);
-            this.grpbx_summary.Location = new System.Drawing.Point(696, 427);
+            this.grpbx_summary.Location = new System.Drawing.Point(692, 479);
             this.grpbx_summary.Name = "grpbx_summary";
-            this.grpbx_summary.Size = new System.Drawing.Size(309, 76);
+            this.grpbx_summary.Size = new System.Drawing.Size(309, 107);
             this.grpbx_summary.TabIndex = 12;
             this.grpbx_summary.TabStop = false;
             this.grpbx_summary.Text = "Additional Details";
             // 
+            // lbl_CurrentTaxMult
+            // 
+            this.lbl_CurrentTaxMult.AutoSize = true;
+            this.lbl_CurrentTaxMult.Location = new System.Drawing.Point(22, 63);
+            this.lbl_CurrentTaxMult.Name = "lbl_CurrentTaxMult";
+            this.lbl_CurrentTaxMult.Size = new System.Drawing.Size(170, 20);
+            this.lbl_CurrentTaxMult.TabIndex = 1;
+            this.lbl_CurrentTaxMult.Text = "Current Tax Multiplier: -";
+            // 
             // lbl_totalItems
             // 
             this.lbl_totalItems.AutoSize = true;
-            this.lbl_totalItems.Location = new System.Drawing.Point(21, 38);
+            this.lbl_totalItems.Location = new System.Drawing.Point(20, 33);
             this.lbl_totalItems.Name = "lbl_totalItems";
-            this.lbl_totalItems.Size = new System.Drawing.Size(143, 20);
+            this.lbl_totalItems.Size = new System.Drawing.Size(200, 20);
             this.lbl_totalItems.TabIndex = 0;
-            this.lbl_totalItems.Text = "Total No. of Items:-";
-            // 
-            // btn_cancelTransaction
-            // 
-            this.btn_cancelTransaction.Location = new System.Drawing.Point(852, 4);
-            this.btn_cancelTransaction.Name = "btn_cancelTransaction";
-            this.btn_cancelTransaction.Size = new System.Drawing.Size(150, 132);
-            this.btn_cancelTransaction.TabIndex = 10;
-            this.btn_cancelTransaction.Text = "CANCEL TRANSACTION";
-            this.btn_cancelTransaction.UseVisualStyleBackColor = true;
-            this.btn_cancelTransaction.Click += new System.EventHandler(this.btn_clear_Click);
-            // 
-            // btn_delete
-            // 
-            this.btn_delete.Location = new System.Drawing.Point(852, 142);
-            this.btn_delete.Name = "btn_delete";
-            this.btn_delete.Size = new System.Drawing.Size(150, 132);
-            this.btn_delete.TabIndex = 9;
-            this.btn_delete.Text = "DELETE ITEM(S)";
-            this.btn_delete.UseVisualStyleBackColor = true;
-            this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
-            // 
-            // btn_quantity
-            // 
-            this.btn_quantity.Location = new System.Drawing.Point(697, 142);
-            this.btn_quantity.Name = "btn_quantity";
-            this.btn_quantity.Size = new System.Drawing.Size(150, 132);
-            this.btn_quantity.TabIndex = 8;
-            this.btn_quantity.Text = "QUANTITY";
-            this.btn_quantity.UseVisualStyleBackColor = true;
-            this.btn_quantity.Click += new System.EventHandler(this.btn_quantity_Click);
-            // 
-            // btn_finalize
-            // 
-            this.btn_finalize.Location = new System.Drawing.Point(697, 4);
-            this.btn_finalize.Name = "btn_finalize";
-            this.btn_finalize.Size = new System.Drawing.Size(150, 132);
-            this.btn_finalize.TabIndex = 7;
-            this.btn_finalize.Text = "FINALIZE TRANSACTION";
-            this.btn_finalize.UseVisualStyleBackColor = true;
-            this.btn_finalize.Click += new System.EventHandler(this.btn_finalize_Click);
+            this.lbl_totalItems.Text = "Current Total No. of Items:-";
             // 
             // dtrgd_POS
             // 
@@ -576,6 +557,88 @@
             this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             this.dataGridViewTextBoxColumn9.Width = 104;
             // 
+            // btnG_Placeholder1
+            // 
+            this.btnG_Placeholder1.BackColor = System.Drawing.Color.Chocolate;
+            this.btnG_Placeholder1.Enabled = false;
+            this.btnG_Placeholder1.Label = "";
+            this.btnG_Placeholder1.Location = new System.Drawing.Point(849, 122);
+            this.btnG_Placeholder1.Name = "btnG_Placeholder1";
+            this.btnG_Placeholder1.Size = new System.Drawing.Size(145, 110);
+            this.btnG_Placeholder1.TabIndex = 27;
+            // 
+            // btnG_CancelTransaction
+            // 
+            this.btnG_CancelTransaction.BackColor = System.Drawing.Color.Firebrick;
+            this.btnG_CancelTransaction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_CancelTransaction.Label = "label1";
+            this.btnG_CancelTransaction.Location = new System.Drawing.Point(847, 8);
+            this.btnG_CancelTransaction.Name = "btnG_CancelTransaction";
+            this.btnG_CancelTransaction.Size = new System.Drawing.Size(143, 108);
+            this.btnG_CancelTransaction.TabIndex = 28;
+            this.btnG_CancelTransaction.Load += new System.EventHandler(this.btnG_CancelTransaction_Load);
+            this.btnG_CancelTransaction.Click += new System.EventHandler(this.btnG_CancelTransaction_Click);
+            // 
+            // btnG_ScannerSettings
+            // 
+            this.btnG_ScannerSettings.BackColor = System.Drawing.Color.Purple;
+            this.btnG_ScannerSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_ScannerSettings.Label = "SET SCAN";
+            this.btnG_ScannerSettings.Location = new System.Drawing.Point(698, 356);
+            this.btnG_ScannerSettings.Name = "btnG_ScannerSettings";
+            this.btnG_ScannerSettings.Size = new System.Drawing.Size(143, 108);
+            this.btnG_ScannerSettings.TabIndex = 29;
+            this.btnG_ScannerSettings.Load += new System.EventHandler(this.btnG_ScannerSettings_Load);
+            this.btnG_ScannerSettings.Click += new System.EventHandler(this.btnG_ScannerSettings_Click);
+            // 
+            // btnG_StartScanning
+            // 
+            this.btnG_StartScanning.BackColor = System.Drawing.Color.RoyalBlue;
+            this.btnG_StartScanning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_StartScanning.Enabled = false;
+            this.btnG_StartScanning.Label = "SCAN";
+            this.btnG_StartScanning.Location = new System.Drawing.Point(850, 356);
+            this.btnG_StartScanning.Name = "btnG_StartScanning";
+            this.btnG_StartScanning.Size = new System.Drawing.Size(145, 110);
+            this.btnG_StartScanning.TabIndex = 30;
+            this.btnG_StartScanning.Load += new System.EventHandler(this.btnG_StartScanning_Load);
+            this.btnG_StartScanning.Click += new System.EventHandler(this.btnG_StartScanning_Click);
+            // 
+            // btnG_DeleteItems
+            // 
+            this.btnG_DeleteItems.BackColor = System.Drawing.Color.Coral;
+            this.btnG_DeleteItems.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_DeleteItems.Label = "DELETE";
+            this.btnG_DeleteItems.Location = new System.Drawing.Point(698, 122);
+            this.btnG_DeleteItems.Name = "btnG_DeleteItems";
+            this.btnG_DeleteItems.Size = new System.Drawing.Size(143, 108);
+            this.btnG_DeleteItems.TabIndex = 31;
+            this.btnG_DeleteItems.Load += new System.EventHandler(this.btnG_DeleteItems_Load);
+            this.btnG_DeleteItems.Click += new System.EventHandler(this.btnG_DeleteItems_Click);
+            // 
+            // btnG_TaxMultiplier
+            // 
+            this.btnG_TaxMultiplier.BackColor = System.Drawing.Color.BlueViolet;
+            this.btnG_TaxMultiplier.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_TaxMultiplier.Label = "TAX";
+            this.btnG_TaxMultiplier.Location = new System.Drawing.Point(698, 239);
+            this.btnG_TaxMultiplier.Name = "btnG_TaxMultiplier";
+            this.btnG_TaxMultiplier.Size = new System.Drawing.Size(143, 108);
+            this.btnG_TaxMultiplier.TabIndex = 32;
+            this.btnG_TaxMultiplier.Load += new System.EventHandler(this.btnG_TaxMultiplier_Load);
+            this.btnG_TaxMultiplier.Click += new System.EventHandler(this.btnG_TaxMultiplier_Click);
+            // 
+            // btnG_Quantity
+            // 
+            this.btnG_Quantity.BackColor = System.Drawing.Color.OliveDrab;
+            this.btnG_Quantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btnG_Quantity.Label = "QUANTITY";
+            this.btnG_Quantity.Location = new System.Drawing.Point(850, 238);
+            this.btnG_Quantity.Name = "btnG_Quantity";
+            this.btnG_Quantity.Size = new System.Drawing.Size(143, 108);
+            this.btnG_Quantity.TabIndex = 33;
+            this.btnG_Quantity.Click += new System.EventHandler(this.btnG_Quantity_Click);
+            // 
             // FRM_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -626,15 +689,10 @@
         private System.Windows.Forms.Button btn_commit;
         private System.Windows.Forms.DataGridView dtgrd_Inventory;
         private System.Windows.Forms.TabPage POS;
-        private System.Windows.Forms.Button btn_setScanner;
         private System.Windows.Forms.Button btn_startScan;
         private System.Windows.Forms.GroupBox grpbx_summary;
         private System.Windows.Forms.Label lbl_totalItems;
         private System.Windows.Forms.TextBox txtbx_total;
-        private System.Windows.Forms.Button btn_cancelTransaction;
-        private System.Windows.Forms.Button btn_delete;
-        private System.Windows.Forms.Button btn_quantity;
-        private System.Windows.Forms.Button btn_finalize;
         private System.Windows.Forms.DataGridView dtrgd_POS;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
@@ -661,6 +719,15 @@
         private System.Windows.Forms.ToolStripStatusLabel ststrplbl_Port;
         private System.Windows.Forms.ToolStripStatusLabel ststrplbl_IP;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lbl_CurrentTaxMult;
+        private btnG_Finalize btnG_Finalize;
+        private btnG_Placeholder btnG_Placeholder1;
+        private btnG_CancelTransaction btnG_CancelTransaction;
+        private btnG_ScannerSettings btnG_ScannerSettings;
+        private btnG_StartScanning btnG_StartScanning;
+        private btnG_DeleteItems btnG_DeleteItems;
+        private btnG_TaxMultiplier btnG_TaxMultiplier;
+        private btnG_Quantity btnG_Quantity;
     }
 }
 

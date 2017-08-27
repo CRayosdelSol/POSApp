@@ -99,7 +99,7 @@
             // btn_confirm
             // 
             this.btn_confirm.Enabled = false;
-            this.btn_confirm.Location = new System.Drawing.Point(125, 97);
+            this.btn_confirm.Location = new System.Drawing.Point(233, 97);
             this.btn_confirm.Name = "btn_confirm";
             this.btn_confirm.Size = new System.Drawing.Size(103, 33);
             this.btn_confirm.TabIndex = 6;
@@ -140,7 +140,7 @@
             // btn_cancel
             // 
             this.btn_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_cancel.Location = new System.Drawing.Point(245, 97);
+            this.btn_cancel.Location = new System.Drawing.Point(104, 97);
             this.btn_cancel.Name = "btn_cancel";
             this.btn_cancel.Size = new System.Drawing.Size(102, 33);
             this.btn_cancel.TabIndex = 11;

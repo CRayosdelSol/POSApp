@@ -45,6 +45,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="btnG_CancelTransaction.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_CancelTransaction.Designer.cs">
+      <DependentUpon>btnG_CancelTransaction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_DeleteItems.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_DeleteItems.Designer.cs">
+      <DependentUpon>btnG_DeleteItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_Finalize.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_Finalize.Designer.cs">
+      <DependentUpon>btnG_Finalize.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_Placeholder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_Placeholder.Designer.cs">
+      <DependentUpon>btnG_Placeholder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_Quantity.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_Quantity.Designer.cs">
+      <DependentUpon>btnG_Quantity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_ScannerSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_ScannerSettings.Designer.cs">
+      <DependentUpon>btnG_ScannerSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_StartScanning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_StartScanning.Designer.cs">
+      <DependentUpon>btnG_StartScanning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="btnG_TaxMultiplier.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="btnG_TaxMultiplier.Designer.cs">
+      <DependentUpon>btnG_TaxMultiplier.cs</DependentUpon>
+    </Compile>
     <Compile Include="FRM_IPAddSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,8 +111,38 @@
     <Compile Include="FRM_Quantity.Designer.cs">
       <DependentUpon>FRM_Quantity.cs</DependentUpon>
     </Compile>
+    <Compile Include="FRM_TaxSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FRM_TaxSettings.Designer.cs">
+      <DependentUpon>FRM_TaxSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="btnG_CancelTransaction.resx">
+      <DependentUpon>btnG_CancelTransaction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_DeleteItems.resx">
+      <DependentUpon>btnG_DeleteItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_Finalize.resx">
+      <DependentUpon>btnG_Finalize.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_Placeholder.resx">
+      <DependentUpon>btnG_Placeholder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_Quantity.resx">
+      <DependentUpon>btnG_Quantity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_ScannerSettings.resx">
+      <DependentUpon>btnG_ScannerSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_StartScanning.resx">
+      <DependentUpon>btnG_StartScanning.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="btnG_TaxMultiplier.resx">
+      <DependentUpon>btnG_TaxMultiplier.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FRM_IPAddSettings.resx">
       <DependentUpon>FRM_IPAddSettings.cs</DependentUpon>
     </EmbeddedResource>
@@ -73,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FRM_Quantity.resx">
       <DependentUpon>FRM_Quantity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FRM_TaxSettings.resx">
+      <DependentUpon>FRM_TaxSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -112,6 +193,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DeleteCell_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tax_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tax_button1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\test.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
