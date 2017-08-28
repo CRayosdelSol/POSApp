@@ -1,6 +1,6 @@
 ﻿namespace _POS
 {
-    partial class FRM_Quantity
+    partial class FrmQuantity
     {
         /// <summary>
         /// Required designer variable.
@@ -84,7 +84,7 @@
             this.Controls.Add(this.txtbx_Quantity);
             this.Controls.Add(this.btn_ok);
             this.Controls.Add(this.label1);
-            this.Name = "FRM_Quantity";
+            this.Name = "FrmQuantity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Specify Item Quantity";
             this.ResumeLayout(false);

@@ -1,6 +1,6 @@
 ﻿namespace _POS
 {
-    partial class FRM_TaxSettings
+    partial class FrmTaxSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -82,7 +82,7 @@
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.txtbx_taxMultiplier);
             this.Controls.Add(this.label1);
-            this.Name = "FRM_TaxSettings";
+            this.Name = "FrmTaxSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tax Multiplier Settings";
             this.ResumeLayout(false);

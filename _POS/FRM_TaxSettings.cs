@@ -1,41 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace _POS
 {
-    public partial class FRM_TaxSettings : Form
+    public partial class FrmTaxSettings : Form
     {
-        FRM_Main mainfrm;
+        readonly FrmMain _mainfrm;
 
-        public FRM_TaxSettings()
+        public FrmTaxSettings()
         {
             InitializeComponent();
         }
 
-        public FRM_TaxSettings(FRM_Main mainfrm)
+        public FrmTaxSettings(FrmMain mainfrm)
         {
             InitializeComponent();
-            this.mainfrm = mainfrm;
+            _mainfrm = mainfrm;
         }
 
         private void btn_OK_Click(object sender, EventArgs e)
         {
-            if (txtbx_taxMultiplier.Text != "0")
+            if (txtbx_taxMultiplier.Text != @"0")
             {
-                mainfrm.taxMultiplier = decimal.Parse(txtbx_taxMultiplier.Text) / 100;
-                mainfrm.haveSpecificTaxMultiplier = true;
+                _mainfrm.TaxMultiplier = decimal.Parse(txtbx_taxMultiplier.Text) / 100;
+                _mainfrm.HaveSpecificTaxMultiplier = true;
             }
             else
             {
-                mainfrm.haveSpecificTaxMultiplier = false;
-                mainfrm.taxMultiplier = 0;
+                _mainfrm.HaveSpecificTaxMultiplier = false;
+                _mainfrm.TaxMultiplier = 0;
             }
 
             Close();
@@ -43,13 +36,13 @@ namespace _POS
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            mainfrm.haveSpecificTaxMultiplier = false;
+            _mainfrm.HaveSpecificTaxMultiplier = false;
             Close();
         }
 
         private void txtbx_taxMultiplier_TextChanged(object sender, EventArgs e)
         {
-            if(txtbx_taxMultiplier.Text == "0" || txtbx_taxMultiplier.Text == string.Empty)
+            if (txtbx_taxMultiplier.Text == @"0" || txtbx_taxMultiplier.Text == string.Empty)
             {
                 btn_OK.Enabled = false;
 
