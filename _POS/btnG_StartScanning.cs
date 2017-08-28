@@ -108,5 +108,15 @@ namespace _POS
         {
             onMouseEnter();
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            this.OnClick(EventArgs.Empty);
+        }
+
+        private void label1_MouseDown(object sender, MouseEventArgs e)
+        {
+            onMouseDown();
+        }
     }
 }
