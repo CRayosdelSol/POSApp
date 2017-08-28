@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DatabaseOperations;
+using DGVPrinterHelper;
 using static System.String;
 
 
@@ -32,8 +33,8 @@ namespace _POS
         private SqlConnection _sqlConnection;
         private SqlCommand _sqlComm;
 
-        internal int SpecificQuantity, TotalQuantity;
-        internal decimal TotalPrice, TaxMultiplier;
+        internal int TotalQuantity;
+        internal decimal TotalPrice, TaxMultiplier, SpecificQuantity;
         internal string IpAddressHolder;
         internal int PortNumber;
         internal bool SpecifiedQuantity, HaveSpecificTaxMultiplier, ScannerSettingsAreSet, IsScanning;
@@ -240,33 +241,53 @@ namespace _POS
 
         public void PrintReceipt(DataGridView grid)
         {
+            DGVPrinter receiptPrinter = new DGVPrinter
+            {
+                Title = "Donkey Horse Mini Grocery",
+                SubTitle = string.Format("{0} {1}, {2}, {3}\n{4}, {5}, {6}", "MMMM St.", "YEFF OF YEX CITY", "1331",
+                    "(02)131-13-33", "1234567", "yehaawNeigh@gmail.com", "WWW.DONKEYHORSEMINI.com"),
+                SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
+                PageNumbers = false,
+                PageNumberInHeader = false,
+                PorportionalColumns = true,
+                HeaderCellAlignment = StringAlignment.Near,
+                Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now.ToString("MMMM dd, yyyy")}"),
+                FooterSpacing = 15
+            };
+            receiptPrinter.PrintDataGridView(grid);
         }
 
         private void btnG_Finalize_Click(object sender, EventArgs e)
         {
             var dialogResult = MessageBox.Show(@"Are you sure you wish to finalize this transaction?",
                 @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            switch (dialogResult)
             {
-                _transactionCounter++;
-                _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
-                dtrgd_POS.Rows.Add("TOTAL", Empty, TotalQuantity.ToString(), TotalPrice.ToString(CultureInfo.InvariantCulture));
-                BuildDataTable(dtrgd_POS, _dt, _tableName);
+                case DialogResult.Yes:
+                    _transactionCounter++;
+                    _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
+                    dtrgd_POS.Rows.Add("TOTAL", Empty, TotalQuantity.ToString(), TotalPrice.ToString("0.00##"));
+                    BuildDataTable(dtrgd_POS, _dt, _tableName);
 
-                //Reset everything that is involved in the transaction process.
-                TotalQuantity = 0;
-                dtrgd_POS.Rows.Clear();
-                dtrgd_POS.Refresh();
-                lbl_totalItems.Text = $@"Total Number of Items: {TotalQuantity}";
-                txtbx_total.Text = @"TOTAL     ₱0.00";
+                    //Produce the simulated receipt.
+                    PrintReceipt(dtrgd_POS);
 
-                //Update the list of previous transactions
-                ListPreviousTransactions();
 
-                //Disable controls that are related to the transaction process as the grid is empty.
-                btnG_DeleteItems.Enabled = false;
-                btnG_Finalize.Enabled = false;
-                btnG_CancelTransaction.Enabled = false;
+                    //Reset everything that is involved in the transaction process.
+                    TotalQuantity = 0;
+                    dtrgd_POS.Rows.Clear();
+                    dtrgd_POS.Refresh();
+                    lbl_totalItems.Text = $@"Total Number of Items: {TotalQuantity}";
+                    txtbx_total.Text = @"TOTAL     ₱0.00";
+
+                    //Update the list of previous transactions
+                    ListPreviousTransactions();
+
+                    //Disable controls that are related to the transaction process as the grid is empty.
+                    btnG_DeleteItems.Enabled = false;
+                    btnG_Finalize.Enabled = false;
+                    btnG_CancelTransaction.Enabled = false;
+                    break;
             }
         }
 
@@ -314,11 +335,11 @@ namespace _POS
             var taxSetFrm = new FrmTaxSettings(this);
             taxSetFrm.ShowDialog();
             lbl_CurrentTaxMult.Text = HaveSpecificTaxMultiplier
-                ? $"Current Tax Multiplier:{TaxMultiplier * 100}%"
-                : "Current Tax Multiplier:None";
+                ? $"Current Tax Multiplier: {TaxMultiplier * 100}%"
+                : "Current Tax Multiplier: None";
         }
 
-        private void btnG_Quantity_Click(object sender, EventArgs e)
+        private void btnG_Quantity_Click(object sender, EventArgs e)    
         {
             var quantityFrm = new FrmQuantity(this);
             quantityFrm.ShowDialog();
@@ -333,8 +354,8 @@ namespace _POS
         {
             if (ScannerSettingsAreSet)
             {
-                var dialogResult = MessageBox.Show(@"Are you sure you wish to finalize this transaction?",
-                    @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var dialogResult = MessageBox.Show(@"The settings for the external barcode reader have already been configured. Do you wish to reconfigure them?",
+                    @"Reconfigure Scanner", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (dialogResult == DialogResult.Yes)
                 {
@@ -429,7 +450,7 @@ namespace _POS
         }
 
         /// <summary>
-        ///     Search the database using the specified serial number.
+        /// Search the database using the specified serial number.
         /// </summary>
         /// <param name="serialNumber">The item's serial number.</param>
         public void SearchForItem(string serialNumber)
@@ -457,12 +478,12 @@ namespace _POS
                 if (SpecifiedQuantity)
                 {
                     var computedPrice = Convert.ToDouble(SpecificQuantity) * itemPrice;
-                    items = new object[] { barcode, itemName, SpecificQuantity.ToString(), computedPrice.ToString(CultureInfo.InvariantCulture) };
+                    items = new object[] { barcode, itemName, SpecificQuantity.ToString(), computedPrice.ToString("0.00##") };
                     SpecifiedQuantity = false;
                 }
                 else
                 {
-                    items = new object[] { barcode, itemName, "1", itemPrice.ToString(CultureInfo.InvariantCulture) };
+                    items = new object[] { barcode, itemName, "1", itemPrice.ToString("0.00##") };
                 }
 
                 dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
