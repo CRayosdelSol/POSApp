@@ -49,7 +49,6 @@ namespace _POS
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
             initializeDataGrid();
             dtgrd_Inventory.AutoGenerateColumns = false;
             dtgrd_transactions.AutoGenerateColumns = false;
@@ -60,11 +59,14 @@ namespace _POS
             cmbbx_searchMode.SelectedIndex = 0;
             scaleComponents(dtgrd_Inventory);
             listPreviousTransactions();
+            txtbx_total.ReadOnly = true;
+            MaximizeBox = false;
+
 
             btn_startScan.Enabled = false;
             ststrplbl_Port.Text = string.Format("Port: {0}", "Not Set");
             ststrplbl_IP.Text = string.Format("I.P. Address: {0}", "Not Set");
-            lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier: {0}", "Not Set");
+            lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier: {0}", "None");
             lbl_totalItems.Text = string.Format("Current Total No. of Items: {0}", 0);
         }
 
@@ -359,7 +361,7 @@ namespace _POS
             }
             else
             {
-                lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier:{0}", "Not Set");
+                lbl_CurrentTaxMult.Text = string.Format("Current Tax Multiplier:{0}", "None");
             }
         }
 
