@@ -46,6 +46,14 @@ namespace _POS
             InitializeComponent();
         }
 
+        private void ScaleComponents()
+        {
+            MinimumSize = new Size(Width, Height);
+            MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             InitializeDataGrid();
@@ -61,20 +69,14 @@ namespace _POS
             txtbx_total.ReadOnly = true;
             MaximizeBox = false;
 
-            
+
             btn_startScan.Enabled = false;
             ststrplbl_Port.Text = $@"Port: {"Not Set"}";
             ststrplbl_IP.Text = $@"I.P. Address: {"Not Set"}";
             lbl_CurrentTaxMult.Text = $@"Current Tax Multiplier: {"None"}";
             lbl_totalItems.Text = $@"Current Total No. of Items: {0}";
-        }
 
-        private void ScaleComponents()
-        {
-            MinimumSize = new Size(Width, Height);
-            MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btn_PrintTransaction.Label = "Print Transaction";
         }
 
         #region Inventory Bits
@@ -90,7 +92,7 @@ namespace _POS
 
             // DB Connection Setup
             _connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + _filepath +
-                         "; Integrated Security=True;Connect Timeout=30";
+                          "; Integrated Security=True;Connect Timeout=30";
             _db = new DatabaseOps(_connString);
 
             //Create the database if and only if it doesn't exist
@@ -212,7 +214,7 @@ namespace _POS
                 var stream = client.GetStream();
 
                 int i;
-                
+
                 while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
                     var serialNumberHolder = Encoding.ASCII.GetString(bytes, 0, i);
@@ -248,7 +250,7 @@ namespace _POS
             {
                 Title = "Donkey Horse Mini Grocery",
                 SubTitle =
-                    $"{"MMMM St."} {"YEFF OF YEX CITY"}, {"1331"}, {"(02)131-13-33"}\n{"1234567"}, {"yehaawNeigh@gmail.com"}, {"WWW.DONKEYHORSEMINI.com"}",
+                    "MMMM St. YEFF OF YEX CITY, 1331, (02)131-13-33\n1234567, yehaawNeigh@gmail.com, WWW.DONKEYHORSEMINI.com",
                 SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
                 PageNumbers = false,
                 PageNumberInHeader = false,
@@ -357,7 +359,8 @@ namespace _POS
         {
             if (ScannerSettingsAreSet)
             {
-                var dialogResult = MessageBox.Show(@"The settings for the external barcode reader have already been configured. Do you wish to reconfigure them?",
+                var dialogResult = MessageBox.Show(
+                    @"The settings for the external barcode reader have already been configured. Do you wish to reconfigure them?",
                     @"Reconfigure Scanner", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (dialogResult == DialogResult.Yes)
@@ -452,6 +455,12 @@ namespace _POS
             ScaleComponents();
         }
 
+        private void btn_PrintTransaction_Click(object sender, EventArgs e)
+        {
+            //Produce the simulated receipt.
+            PrintReceipt(dtgrd_transactions);
+        }
+
         /// <summary>
         /// Search the database using the specified serial number.
         /// </summary>
@@ -481,7 +490,11 @@ namespace _POS
                 if (SpecifiedQuantity)
                 {
                     var computedPrice = Convert.ToDouble(SpecificQuantity) * itemPrice;
-                    items = new object[] { barcode, itemName, SpecificQuantity.ToString(CultureInfo.InvariantCulture), computedPrice.ToString("0.00##") };
+                    items = new object[]
+                    {
+                        barcode, itemName, SpecificQuantity.ToString(CultureInfo.InvariantCulture),
+                        computedPrice.ToString("0.00##")
+                    };
                     SpecifiedQuantity = false;
                 }
                 else
