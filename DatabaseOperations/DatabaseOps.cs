@@ -1,26 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO; 
+using System.IO;
 namespace DatabaseOperations
 {
     public class DatabaseOps
     {
+        /*
+                public string FileName;
+        */
 
-        internal string strConn;
-        public string fileName;
+        private SqlConnection _sqlconn;
 
-        SqlConnection sqlconn;
-
-        public string StrConn
-        {
-            get { return strConn; }
-            set { strConn = value; }
-        }
+        private string StrConn { get; }
 
         public DatabaseOps(string connString)
         {
@@ -34,8 +26,8 @@ namespace DatabaseOperations
         /// <param name="filename">Complete filename and path of the DB</param>
         public void CreateDatabase(string filename)
         {
-            string path = filename; //Obtains the absolute path to the databse.
-            string databaseName = Path.GetFileNameWithoutExtension(path); //Derived  database name.
+            var path = filename; //Obtains the absolute path to the databse.
+            var databaseName = Path.GetFileNameWithoutExtension(path); //Derived  database name.
             using (var connection = new SqlConnection(
             @"Data Source=(LocalDB)\MSSQLLocalDB; Initial Catalog=master; Integrated Security=true;"))
             {
@@ -47,66 +39,51 @@ namespace DatabaseOperations
                     command.ExecuteNonQuery();
 
                     command.CommandText =
-                        string.Format("EXEC sp_detach_db '{0}', 'true'", databaseName);
+                        $"EXEC sp_detach_db '{databaseName}', 'true'";
                     command.ExecuteNonQuery();
                 }
             }
         }
 
-        public bool checkForTableExistence(string tableName)
+        private bool CheckForTableExistence(string tableName)
         {
-            int check = 0;
-            using (sqlconn = new SqlConnection(StrConn))
+            int check;
+            using (_sqlconn = new SqlConnection(StrConn))
             {
-                string checkExistence = @"IF EXISTS(SELECT*FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME=" + "'" + tableName + "') SELECT 1 ELSE SELECT 0";
-                sqlconn.Open();
-                SqlCommand sqlCommand = new SqlCommand(checkExistence, sqlconn);
+                var checkExistence = @"IF EXISTS(SELECT*FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME=" + "'" + tableName + "') SELECT 1 ELSE SELECT 0";
+                _sqlconn.Open();
+                var sqlCommand = new SqlCommand(checkExistence, _sqlconn);
                 check = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlconn.Close();
+                _sqlconn.Close();
             }
 
-            if(check == 0)
-            {
-                return false;
-            }
-
-            return true;
+            return check != 0;
         }
 
         public void CreateTable(string tableName, string attributeA, string dataTypeA, string attributeB, string dataTypeB, string attributeC, string dataTypeC, string attributeD, string dataTypeD, string attributeE, string dataTypeE)
         {
-            using (SqlConnection sqlconn = new SqlConnection(StrConn))
+            using (var sqlconn = new SqlConnection(StrConn))
             {
-                if (!checkForTableExistence(tableName))
-                {
-                    sqlconn.Open();
-                    string temp = string.Format(
-                        "CREATE TABLE {0}(" +
-                        "{1} {2}," +
-                        "{3} {4}," +
-                        "{5} {6}," +
-                        "{7} {8}," +
-                        "{9} {10});",
-                        tableName, attributeA, dataTypeA, attributeB, dataTypeB,attributeC,dataTypeC,attributeD,dataTypeD,attributeE,dataTypeE);
+                if (CheckForTableExistence(tableName)) return;
+                sqlconn.Open();
+                var temp = $"CREATE TABLE {tableName}(" + $"{attributeA} {dataTypeA}," + $"{attributeB} {dataTypeB}," +
+                           $"{attributeC} {dataTypeC}," + $"{attributeD} {dataTypeD}," + $"{attributeE} {dataTypeE});";
 
-                    string createTableCommand = temp;
-                    SqlCommand sqlCommand = new SqlCommand(createTableCommand, sqlconn);
-                    sqlCommand.ExecuteNonQuery();
-                }
+                var createTableCommand = temp;
+                var sqlCommand = new SqlCommand(createTableCommand, sqlconn);
+                sqlCommand.ExecuteNonQuery();
             }
         }
 
         public void UpdateDataset(DataSet ds, string tableName)
         {
-            sqlconn = new SqlConnection(StrConn);
+            _sqlconn = new SqlConnection(StrConn);
 
-            string sInsert, sUpdate, sDelete;
+            var sInsert = "INSERT INTO " + tableName + "(Barcode,Item,Price,Quantity) values(@p2,@p3,@p4,@p5)";
 
-            sInsert = "INSERT INTO " + tableName + "(Barcode,Item,Price,Quantity) values(@p2,@p3,@p4,@p5)";
+            var sUpdate = "UPDATE " + tableName + " SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
 
-            sUpdate = "UPDATE " + tableName + " SET Barcode=@p2,Item=@p3,Price=@p4,Quantity=@p5 where ID=@p1";
-
-            sDelete = "DELETE FROM " + tableName + " WHERE ID=@p1";
+            var sDelete = "DELETE FROM " + tableName + " WHERE ID=@p1";
 
             SqlParameter[] pInsert = new SqlParameter[4];
             SqlParameter[] pUpdate = new SqlParameter[5];
@@ -114,45 +91,49 @@ namespace DatabaseOperations
 
             pInsert[0] = new SqlParameter("@p2", SqlDbType.VarChar, 255, "Barcode");
             pInsert[1] = new SqlParameter("@p3", SqlDbType.VarChar, 255, "Item");
-            pInsert[2] = new SqlParameter("@p4", SqlDbType.VarChar, 255, "Price");
+            pInsert[2] = new SqlParameter("@p4", SqlDbType.SmallMoney, 255, "Price");
             pInsert[3] = new SqlParameter("@p5", SqlDbType.VarChar, 255, "Quantity");
 
             pUpdate[0] = new SqlParameter("@p1", SqlDbType.Int, 1000, "ID");
             pUpdate[1] = new SqlParameter("@p2", SqlDbType.VarChar, 255, "Barcode");
             pUpdate[2] = new SqlParameter("@p3", SqlDbType.VarChar, 255, "Item");
-            pUpdate[3] = new SqlParameter("@p4", SqlDbType.VarChar, 255, "Price");
+            pUpdate[3] = new SqlParameter("@p4", SqlDbType.SmallMoney, 255, "Price");
             pUpdate[4] = new SqlParameter("@p5", SqlDbType.VarChar, 255, "Quantity");
 
             pDelete[0] = new SqlParameter("@p1", SqlDbType.VarChar, 255, "ID");
 
-            var cmdInsert = new SqlCommand(sInsert, sqlconn);
-            var cmdUpdate = new SqlCommand(sUpdate, sqlconn);
-            var cmdDelete = new SqlCommand(sDelete, sqlconn);
+            var cmdInsert = new SqlCommand(sInsert, _sqlconn);
+            var cmdUpdate = new SqlCommand(sUpdate, _sqlconn);
+            var cmdDelete = new SqlCommand(sDelete, _sqlconn);
 
             cmdInsert.Parameters.AddRange(pInsert);
             cmdUpdate.Parameters.AddRange(pUpdate);
             cmdDelete.Parameters.AddRange(pDelete);
 
-            SqlDataAdapter da = new SqlDataAdapter();
-            da.InsertCommand = cmdInsert;
-            da.UpdateCommand = cmdUpdate;
-            da.DeleteCommand = cmdDelete;
+            var da = new SqlDataAdapter
+            {
+                InsertCommand = cmdInsert,
+                UpdateCommand = cmdUpdate,
+                DeleteCommand = cmdDelete
+            };
             da.Update(ds, tableName);
             ds.AcceptChanges();
         }
 
-        public void dropTable(string tableName)
+/*
+        public void DropTable(string tableName)
         {
-            using (sqlconn = new SqlConnection(strConn))
+            using (_sqlconn = new SqlConnection(StrConn))
             {
-                sqlconn.Open();
-                string query = "DROP TABLE @tableName";
-                SqlCommand sqlComm = new SqlCommand(query, sqlconn);
+                _sqlconn.Open();
+                var query = "DROP TABLE @tableName";
+                var sqlComm = new SqlCommand(query, _sqlconn);
                 sqlComm.Parameters.AddWithValue("@tableName", tableName);
                 sqlComm.ExecuteNonQuery();
-                sqlconn.Close();
+                _sqlconn.Close();
                 SqlConnection.ClearAllPools();
             }
         }
+*/
     }
 }

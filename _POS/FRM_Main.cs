@@ -21,8 +21,8 @@ namespace _POS
     {
         private string _dir;
         private string _tableName;
-        protected string Filepath;
-        protected string ConnString;
+        private string _filepath;
+        private string _connString;
         private int _transactionCounter;
 
         private DataTable _dt;
@@ -33,11 +33,13 @@ namespace _POS
         private SqlConnection _sqlConnection;
         private SqlCommand _sqlComm;
 
-        internal int TotalQuantity;
-        internal decimal TotalPrice, TaxMultiplier, SpecificQuantity;
+        private int _totalQuantity;
+        private decimal _totalPrice;
+        internal decimal TaxMultiplier, SpecificQuantity;
         internal string IpAddressHolder;
         internal int PortNumber;
-        internal bool SpecifiedQuantity, HaveSpecificTaxMultiplier, ScannerSettingsAreSet, IsScanning;
+        internal bool SpecifiedQuantity, HaveSpecificTaxMultiplier, ScannerSettingsAreSet;
+        private bool _isScanning;
 
         public FrmMain()
         {
@@ -54,12 +56,12 @@ namespace _POS
             tmr.Tick += UpdateTime;
             tmr.Start();
             cmbbx_searchMode.SelectedIndex = 0;
-            ScaleComponents(dtgrd_Inventory);
+            ScaleComponents();
             ListPreviousTransactions();
             txtbx_total.ReadOnly = true;
             MaximizeBox = false;
 
-
+            
             btn_startScan.Enabled = false;
             ststrplbl_Port.Text = $@"Port: {"Not Set"}";
             ststrplbl_IP.Text = $@"I.P. Address: {"Not Set"}";
@@ -67,7 +69,7 @@ namespace _POS
             lbl_totalItems.Text = $@"Current Total No. of Items: {0}";
         }
 
-        public void ScaleComponents(DataGridView grid)
+        private void ScaleComponents()
         {
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
@@ -77,23 +79,23 @@ namespace _POS
 
         #region Inventory Bits
 
-        public void InitializeDataGrid()
+        private void InitializeDataGrid()
         {
             _dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\ProjectFiles\";
-            Filepath = _dir + "Inventory.mdf";
+            _filepath = _dir + "Inventory.mdf";
 
             // Create the database within the specified directory
             var dirInf = Directory.CreateDirectory(_dir);
             dirInf.Attributes = FileAttributes.Directory;
 
             // DB Connection Setup
-            ConnString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Filepath +
+            _connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + _filepath +
                          "; Integrated Security=True;Connect Timeout=30";
-            _db = new DatabaseOps(ConnString);
+            _db = new DatabaseOps(_connString);
 
             //Create the database if and only if it doesn't exist
-            if (!File.Exists(Filepath))
-                _db.CreateDatabase(Filepath);
+            if (!File.Exists(_filepath))
+                _db.CreateDatabase(_filepath);
 
             _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
 
@@ -102,14 +104,14 @@ namespace _POS
                 "varchar(255)", "Price", "varchar(255)", "Quantity", "varchar(255)");
 
             BindDatasource(dtgrd_Inventory, "Items");
-            ScaleComponents(dtgrd_Inventory);
+            ScaleComponents();
         }
 
-        public void BindDatasource(DataGridView grid, string tableName)
+        private void BindDatasource(DataGridView grid, string tableName)
         {
             try
             {
-                _sqlConnection = new SqlConnection(ConnString);
+                _sqlConnection = new SqlConnection(_connString);
                 var command = "SELECT * FROM [" + tableName + "]";
                 _sqlComm = new SqlCommand(command, _sqlConnection);
                 _da = new SqlDataAdapter(_sqlComm);
@@ -172,8 +174,8 @@ namespace _POS
 
         private void dtrgd_POS_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            TotalPrice = 0;
-            TotalQuantity = 0;
+            _totalPrice = 0;
+            _totalQuantity = 0;
 
             btnG_DeleteItems.Enabled = true;
             btnG_Finalize.Enabled = true;
@@ -182,19 +184,19 @@ namespace _POS
             foreach (DataGridViewRow row in dtrgd_POS.Rows)
                 if (row.Cells[0].Value.ToString() != "TOTAL")
                 {
-                    TotalQuantity += Convert.ToInt32(row.Cells[2].Value);
-                    TotalPrice += Convert.ToDecimal(row.Cells[3].Value);
+                    _totalQuantity += Convert.ToInt32(row.Cells[2].Value);
+                    _totalPrice += Convert.ToDecimal(row.Cells[3].Value);
 
                     if (HaveSpecificTaxMultiplier)
-                        TotalPrice += TotalPrice * TaxMultiplier;
+                        _totalPrice += _totalPrice * TaxMultiplier;
                 }
 
             //Display the total cost in terms of Philippine Peso
-            txtbx_total.Text = @"TOTAL:   " + TotalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
-            lbl_totalItems.Text = $@"Total Number of Items: {TotalQuantity}";
+            txtbx_total.Text = @"TOTAL:   " + _totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
+            lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
         }
 
-        public void Scan()
+        private void Scan()
         {
             TcpListener server = null;
             var bytes = new byte[512];
@@ -210,12 +212,13 @@ namespace _POS
                 var stream = client.GetStream();
 
                 int i;
-
+                
                 while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
                     var serialNumberHolder = Encoding.ASCII.GetString(bytes, 0, i);
                     SearchForItem(serialNumberHolder);
                 }
+
 
                 client.Close();
             }
@@ -226,9 +229,9 @@ namespace _POS
             {
                 Debug.Assert(server != null, nameof(server) + " != null");
                 server.Stop();
-                IsScanning = false;
-                btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Enabled = true; }));
-                btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Label = "START\nSCANNING"; }));
+                _isScanning = false;
+                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = true; }));
+                btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Label = "START\nSCANNING"; }));
             }
             //bring me back
         }
@@ -239,19 +242,19 @@ namespace _POS
                 BindDatasource(dtgrd_transactions, lstbx_transactions.SelectedItem.ToString());
         }
 
-        public void PrintReceipt(DataGridView grid)
+        private void PrintReceipt(DataGridView grid)
         {
-            DGVPrinter receiptPrinter = new DGVPrinter
+            var receiptPrinter = new DGVPrinter
             {
                 Title = "Donkey Horse Mini Grocery",
-                SubTitle = string.Format("{0} {1}, {2}, {3}\n{4}, {5}, {6}", "MMMM St.", "YEFF OF YEX CITY", "1331",
-                    "(02)131-13-33", "1234567", "yehaawNeigh@gmail.com", "WWW.DONKEYHORSEMINI.com"),
+                SubTitle =
+                    $"{"MMMM St."} {"YEFF OF YEX CITY"}, {"1331"}, {"(02)131-13-33"}\n{"1234567"}, {"yehaawNeigh@gmail.com"}, {"WWW.DONKEYHORSEMINI.com"}",
                 SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
                 PageNumbers = false,
                 PageNumberInHeader = false,
                 PorportionalColumns = true,
                 HeaderCellAlignment = StringAlignment.Near,
-                Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now.ToString("MMMM dd, yyyy")}"),
+                Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now:MMMM dd, yyyy}"),
                 FooterSpacing = 15
             };
             receiptPrinter.PrintDataGridView(grid);
@@ -266,18 +269,18 @@ namespace _POS
                 case DialogResult.Yes:
                     _transactionCounter++;
                     _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
-                    dtrgd_POS.Rows.Add("TOTAL", Empty, TotalQuantity.ToString(), TotalPrice.ToString("0.00##"));
-                    BuildDataTable(dtrgd_POS, _dt, _tableName);
+                    dtrgd_POS.Rows.Add("TOTAL", Empty, _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
+                    BuildDataTable(dtrgd_POS, _tableName);
 
                     //Produce the simulated receipt.
                     PrintReceipt(dtrgd_POS);
 
 
                     //Reset everything that is involved in the transaction process.
-                    TotalQuantity = 0;
+                    _totalQuantity = 0;
                     dtrgd_POS.Rows.Clear();
                     dtrgd_POS.Refresh();
-                    lbl_totalItems.Text = $@"Total Number of Items: {TotalQuantity}";
+                    lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
                     txtbx_total.Text = @"TOTAL     ₱0.00";
 
                     //Update the list of previous transactions
@@ -302,10 +305,10 @@ namespace _POS
                 @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                TotalQuantity = 0;
+                _totalQuantity = 0;
                 dtrgd_POS.Rows.Clear();
                 dtrgd_POS.Refresh();
-                lbl_totalItems.Text = $@"Total Number of Items: {TotalQuantity}";
+                lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
                 txtbx_total.Text = @"TOTAL     ₱0.00";
 
                 btnG_DeleteItems.Enabled = false;
@@ -339,7 +342,7 @@ namespace _POS
                 : "Current Tax Multiplier: None";
         }
 
-        private void btnG_Quantity_Click(object sender, EventArgs e)    
+        private void btnG_Quantity_Click(object sender, EventArgs e)
         {
             var quantityFrm = new FrmQuantity(this);
             quantityFrm.ShowDialog();
@@ -363,13 +366,13 @@ namespace _POS
                     frmIpAddSettings.ShowDialog();
                     if (ScannerSettingsAreSet)
                     {
-                        btnG_StartScanning.Enabled = true;
+                        btn_startScan.Enabled = true;
                         ststrplbl_Port.Text = $@"Port: {PortNumber}";
                         ststrplbl_IP.Text = $@"I.P. Address: {IpAddressHolder}";
                     }
                     else
                     {
-                        btnG_StartScanning.Enabled = false;
+                        btn_startScan.Enabled = false;
                         ststrplbl_Port.Text = $@"Port: {"Not Set"}";
                         ststrplbl_IP.Text = $@"I.P. Address: {"Not Set"}";
                     }
@@ -382,13 +385,13 @@ namespace _POS
 
                 if (ScannerSettingsAreSet)
                 {
-                    btnG_StartScanning.Enabled = true;
+                    btn_startScan.Enabled = true;
                     ststrplbl_Port.Text = $@"Port: {PortNumber}";
                     ststrplbl_IP.Text = $@"I.P. Address: {IpAddressHolder}";
                 }
                 else
                 {
-                    btnG_StartScanning.Enabled = false;
+                    btn_startScan.Enabled = false;
                     ststrplbl_Port.Text = $@"Port: {"Not Set"}";
                     ststrplbl_IP.Text = $@"I.P. Address: {"Not Set"}";
                 }
@@ -397,7 +400,7 @@ namespace _POS
 
         private void btnG_StartScanning_Load(object sender, EventArgs e)
         {
-            btnG_StartScanning.Label = "START\nSCANNING";
+            btn_startScan.Label = "START\nSCANNING";
         }
 
         private async void btnG_StartScanning_Click(object sender, EventArgs e)
@@ -407,11 +410,11 @@ namespace _POS
             cessed.*/
             await Task.Run(() =>
             {
-                IsScanning = true;
-                while (IsScanning)
+                _isScanning = true;
+                while (_isScanning)
                 {
-                    btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Enabled = false; }));
-                    btn_startScan.Invoke(new MethodInvoker(delegate { btnG_StartScanning.Label = "SCANNING"; }));
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Enabled = false; }));
+                    btn_startScan.Invoke(new MethodInvoker(delegate { btn_startScan.Label = "SCANNING"; }));
                     Scan();
                 }
             });
@@ -446,14 +449,14 @@ namespace _POS
         {
             _db.UpdateDataset(_ds, "Items");
             BindDatasource(dtgrd_Inventory, "Items");
-            ScaleComponents(dtgrd_Inventory);
+            ScaleComponents();
         }
 
         /// <summary>
         /// Search the database using the specified serial number.
         /// </summary>
         /// <param name="serialNumber">The item's serial number.</param>
-        public void SearchForItem(string serialNumber)
+        private void SearchForItem(string serialNumber)
         {
             object[] items;
 
@@ -462,7 +465,7 @@ namespace _POS
             string barcode = Empty, itemName = Empty;
             double itemPrice = 0;
 
-            using (_sqlConnection = new SqlConnection(ConnString))
+            using (_sqlConnection = new SqlConnection(_connString))
             {
                 _sqlConnection.Open();
                 _sqlComm = new SqlCommand(command, _sqlConnection);
@@ -478,7 +481,7 @@ namespace _POS
                 if (SpecifiedQuantity)
                 {
                     var computedPrice = Convert.ToDouble(SpecificQuantity) * itemPrice;
-                    items = new object[] { barcode, itemName, SpecificQuantity.ToString(), computedPrice.ToString("0.00##") };
+                    items = new object[] { barcode, itemName, SpecificQuantity.ToString(CultureInfo.InvariantCulture), computedPrice.ToString("0.00##") };
                     SpecifiedQuantity = false;
                 }
                 else
@@ -493,10 +496,10 @@ namespace _POS
             }
         }
 
-        public void BuildDataTable(DataGridView grid, DataTable table, string tableName)
+        private void BuildDataTable(DataGridView grid, string tableName)
         {
             _db.CreateTable(tableName, "ID", "int Identity(1,1) PRIMARY KEY", "Barcode", "varchar(255)", "Item",
-                "varchar(255)", "Quantity", "varchar(255)", "Price", "varchar(255)");
+                "varchar(255)", "Quantity", "varchar(255)", "Price", "SmallMoney");
 
             _dt = new DataTable(tableName);
             _dt.Columns.Add("Barcode", Type.GetType("System.String") ?? throw new InvalidOperationException());
@@ -518,11 +521,11 @@ namespace _POS
             _db.UpdateDataset(_ds, tableName);
         }
 
-        public void ListPreviousTransactions()
+        private void ListPreviousTransactions()
         {
             lstbx_transactions.Items.Clear();
             const string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
-            using (_sqlConnection = new SqlConnection(ConnString))
+            using (_sqlConnection = new SqlConnection(_connString))
             {
                 _sqlConnection.Open();
 

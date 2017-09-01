@@ -1646,13 +1646,13 @@ namespace DGVPrinterHelper //AllocationRequest
             PrintMargins = new Margins(60, 60, 40, 40);
 
             // set default fonts
-            pagenofont = new Font("Tahoma", 8, FontStyle.Regular, GraphicsUnit.Point);
+            pagenofont = new Font("Consolas", 8, FontStyle.Regular, GraphicsUnit.Point);
             pagenocolor = Color.Black;
-            titlefont = new Font("Tahoma", 18, FontStyle.Bold, GraphicsUnit.Point);
+            titlefont = new Font("Consolas", 18, FontStyle.Bold, GraphicsUnit.Point);
             titlecolor = Color.Black;
-            subtitlefont = new Font("Tahoma", 12, FontStyle.Bold, GraphicsUnit.Point);
+            subtitlefont = new Font("Consolas", 12, FontStyle.Bold, GraphicsUnit.Point);
             subtitlecolor = Color.Black;
-            footerfont = new Font("Tahoma", 10, FontStyle.Bold, GraphicsUnit.Point);
+            footerfont = new Font("Consolas", 10, FontStyle.Bold, GraphicsUnit.Point);
             footercolor = Color.Black;
 
             // default spacing
@@ -1725,7 +1725,7 @@ namespace DGVPrinterHelper //AllocationRequest
         {
             if (EnableLogging) Logger.LogInfoMsg("PrintPreviewDataGridView process started");
             if (null == dgv) throw new Exception("Null Parameter passed to DGVPrinter.");
-            if (!(typeof(DataGridView).IsInstanceOfType(dgv)))
+            if (!(dgv is DataGridView))
                 throw new Exception("Invalid Parameter passed to DGVPrinter.");
 
             // save the datagridview we're printing
