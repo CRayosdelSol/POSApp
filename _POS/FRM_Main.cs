@@ -266,34 +266,63 @@ namespace _POS
         {
             var dialogResult = MessageBox.Show(@"Are you sure you wish to finalize this transaction?",
                 @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            switch (dialogResult)
+            const string cmdQty = "SELECT Quantity FROM Items WHERE Barcode=@code";
+
+            if (dialogResult != DialogResult.Yes) return;
+
+            // update the inventory 
+            foreach (DataGridViewRow datarow in dtrgd_POS.Rows)
             {
-                case DialogResult.Yes:
-                    _transactionCounter++;
-                    _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
-                    dtrgd_POS.Rows.Add("TOTAL", Empty, _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
-                    BuildDataTable(dtrgd_POS, _tableName);
+                var serialNumber = datarow.Cells[0].Value.ToString();
+                int orderQty = Convert.ToInt16(datarow.Cells[2].Value.ToString());
 
-                    //Produce the simulated receipt.
-                    PrintReceipt(dtrgd_POS);
+                using (_sqlConnection = new SqlConnection(_connString))
+                {
+                    _sqlConnection.Open();
 
+                    var sqlQty = new SqlCommand(cmdQty, _sqlConnection);
+                    sqlQty.Parameters.AddWithValue("@code", serialNumber);
 
-                    //Reset everything that is involved in the transaction process.
-                    _totalQuantity = 0;
-                    dtrgd_POS.Rows.Clear();
-                    dtrgd_POS.Refresh();
-                    lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
-                    txtbx_total.Text = @"TOTAL     ₱0.00";
+                    var qtyReader = sqlQty.ExecuteReader();
+                    var storedQty = 0;
+                    while (qtyReader.Read())
+                    {
+                        storedQty = Convert.ToInt16(qtyReader["Quantity"].ToString());
+                    }
+                    qtyReader.Close();
 
-                    //Update the list of previous transactions
-                    ListPreviousTransactions();
+                    storedQty -= orderQty;
+                    var updateCmd = $"UPDATE Items set Quantity={storedQty} where Barcode=@code";
+                    var sqlUpd = new SqlCommand(updateCmd, _sqlConnection);
+                    sqlUpd.Parameters.AddWithValue("@code", serialNumber);
 
-                    //Disable controls that are related to the transaction process as the grid is empty.
-                    btnG_DeleteItems.Enabled = false;
-                    btnG_Finalize.Enabled = false;
-                    btnG_CancelTransaction.Enabled = false;
-                    break;
+                    sqlUpd.ExecuteNonQuery();
+                }
             }
+
+            _transactionCounter++;
+            _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
+            dtrgd_POS.Rows.Add("TOTAL", Empty, _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
+            BuildDataTable(dtrgd_POS, _tableName);
+
+            //Produce the simulated receipt.
+            PrintReceipt(dtrgd_POS);
+
+
+            //Reset everything that is involved in the transaction process.
+            _totalQuantity = 0;
+            dtrgd_POS.Rows.Clear();
+            dtrgd_POS.Refresh();
+            lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
+            txtbx_total.Text = @"TOTAL     ₱0.00";
+
+            //Update the list of previous transactions
+            ListPreviousTransactions();
+
+            //Disable controls that are related to the transaction process as the grid is empty.
+            btnG_DeleteItems.Enabled = false;
+            btnG_Finalize.Enabled = false;
+            btnG_CancelTransaction.Enabled = false;
         }
 
         private void btnG_CancelTransaction_Load(object sender, EventArgs e)
@@ -441,8 +470,8 @@ namespace _POS
 
         private void btnG_DeleteItems_Click(object sender, EventArgs e)
         {
-            var dialogResult = MessageBox.Show(@"Are you sure you wish to finalize this transaction?",
-                @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var dialogResult = MessageBox.Show(@"Are you sure you wish to delete the selected items?",
+                @"Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
                 foreach (DataGridViewRow selectedRow in dtrgd_POS.SelectedRows)
                     dtrgd_POS.Rows.Remove(selectedRow);
@@ -459,6 +488,11 @@ namespace _POS
         {
             //Produce the simulated receipt.
             PrintReceipt(dtgrd_transactions);
+        }
+
+        private void Tbctrl_POS_Click(object sender, EventArgs e)
+        {
+            dtgrd_Inventory.Refresh();
         }
 
         /// <summary>
@@ -487,26 +521,28 @@ namespace _POS
                     itemPrice = Convert.ToDouble(_reader["Price"].ToString());
                 }
 
-                if (SpecifiedQuantity)
-                {
-                    var computedPrice = Convert.ToDouble(SpecificQuantity) * itemPrice;
-                    items = new object[]
-                    {
-                        barcode, itemName, SpecificQuantity.ToString(CultureInfo.InvariantCulture),
-                        computedPrice.ToString("0.00##")
-                    };
-                    SpecifiedQuantity = false;
-                }
-                else
-                {
-                    items = new object[] { barcode, itemName, "1", itemPrice.ToString("0.00##") };
-                }
-
-                dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
-
-                //dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.DataSource = dt; }));
-                //dtrgd_POS.Rows.Add(items);
+                _reader.Close();
             }
+
+            if (SpecifiedQuantity)
+            {
+                var computedPrice = Convert.ToDouble(SpecificQuantity) * itemPrice;
+                items = new object[]
+                {
+                    barcode, itemName, SpecificQuantity.ToString(CultureInfo.InvariantCulture),
+                    computedPrice.ToString("0.00##")
+                };
+                SpecifiedQuantity = false;
+            }
+            else
+            {
+                items = new object[] { barcode, itemName, "1", itemPrice.ToString("0.00##") };
+            }
+
+            dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
+
+            //dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.DataSource = dt; }));
+            //dtrgd_POS.Rows.Add(items);
         }
 
         private void BuildDataTable(DataGridView grid, string tableName)

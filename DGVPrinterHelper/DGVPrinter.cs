@@ -1643,16 +1643,16 @@ namespace DGVPrinterHelper //AllocationRequest
             printDoc = new PrintDocument();
             //printDoc.PrintPage += new PrintPageEventHandler(PrintPageEventHandler);
             //printDoc.BeginPrint += new PrintEventHandler(BeginPrintEventHandler);
-            PrintMargins = new Margins(60, 60, 40, 40);
+            PrintMargins = new Margins(120, 120, 40, 40);
 
             // set default fonts
             pagenofont = new Font("Consolas", 8, FontStyle.Regular, GraphicsUnit.Point);
             pagenocolor = Color.Black;
             titlefont = new Font("Consolas", 18, FontStyle.Bold, GraphicsUnit.Point);
             titlecolor = Color.Black;
-            subtitlefont = new Font("Consolas", 12, FontStyle.Bold, GraphicsUnit.Point);
+            subtitlefont = new Font("Consolas", 12, FontStyle.Regular, GraphicsUnit.Point);
             subtitlecolor = Color.Black;
-            footerfont = new Font("Consolas", 10, FontStyle.Bold, GraphicsUnit.Point);
+            footerfont = new Font("Consolas", 10, FontStyle.Regular, GraphicsUnit.Point);
             footercolor = Color.Black;
 
             // default spacing
