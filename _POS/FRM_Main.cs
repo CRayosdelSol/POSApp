@@ -15,6 +15,7 @@ using DGVPrinterHelper;
 using static System.String;
 using System.Collections.Generic;
 using System.Collections;
+using System.Drawing.Printing;
 
 
 namespace _POS
@@ -370,6 +371,15 @@ namespace _POS
 
             //Produce the simulated receipt.
             collateItems();
+            PrintDialog printdiag = new PrintDialog();
+            PrintDocument printDoc = new PrintDocument();
+            printdiag.Document = printDoc;
+            printDoc.PrintPage+= new System.Drawing.Printing.PrintPageEventHandler(CreateReceipt);
+            DialogResult result = printdiag.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                printDoc.Print();
+            }
             //CreateReceipt();
             //PrintReceipt(dtrgd_POS);
 
