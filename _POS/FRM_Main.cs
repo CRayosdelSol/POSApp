@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using DatabaseOperations;
 using DGVPrinterHelper;
 using static System.String;
+using System.Collections.Generic;
+using System.Collections;
 
 
 namespace _POS
@@ -40,6 +42,7 @@ namespace _POS
         internal int PortNumber;
         internal bool SpecifiedQuantity, HaveSpecificTaxMultiplier, ScannerSettingsAreSet;
         private bool _isScanning;
+        internal List<string> transactionList;
 
         public FrmMain()
         {
@@ -244,22 +247,82 @@ namespace _POS
                 BindDatasource(dtgrd_transactions, lstbx_transactions.SelectedItem.ToString());
         }
 
-        private void PrintReceipt(DataGridView grid)
+        //private void PrintReceipt(DataGridView grid)
+        //{
+        //    var receiptPrinter = new DGVPrinter
+        //    {
+        //        Title = "Donkey Horse Mini Grocery",
+        //        SubTitle =
+        //            "MMMM St. YEFF OF YEX CITY, 1331, (02)131-13-33\n1234567, yehaawNeigh@gmail.com, WWW.DONKEYHORSEMINI.com",
+        //        SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
+        //        PageNumbers = false,
+        //        PageNumberInHeader = false,
+        //        PorportionalColumns = true,
+        //        HeaderCellAlignment = StringAlignment.Near,
+        //        Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now:MMMM dd, yyyy}"),
+        //        FooterSpacing = 15
+        //    };
+        //    receiptPrinter.PrintDataGridView(grid);
+        //}
+
+        public void CreateReceipt(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            var receiptPrinter = new DGVPrinter
+            Graphics graphic = e.Graphics;
+
+            Font font = new Font("Courier New", 12);
+
+            float fontHeight = font.GetHeight();
+
+            int startX = 10;
+            int startY = 10;
+            int offset = 40;
+
+            graphic.DrawString("Donkey Kong Online Shop".PadLeft(38), new Font("Courier New", 18), new SolidBrush(Color.Black), startX, startY);
+            string top = "Date and Time: ".PadLeft(35) + DateTime.Now.ToString();
+
+            graphic.DrawString(top, font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + (int)fontHeight; //spacing
+            graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + (int)fontHeight + 5; //make the spacing consistent
+            foreach (string v in transactionList)
             {
-                Title = "Donkey Horse Mini Grocery",
-                SubTitle =
-                    "MMMM St. YEFF OF YEX CITY, 1331, (02)131-13-33\n1234567, yehaawNeigh@gmail.com, WWW.DONKEYHORSEMINI.com",
-                SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
-                PageNumbers = false,
-                PageNumberInHeader = false,
-                PorportionalColumns = true,
-                HeaderCellAlignment = StringAlignment.Near,
-                Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now:MMMM dd, yyyy}"),
-                FooterSpacing = 15
-            };
-            receiptPrinter.PrintDataGridView(grid);
+                graphic.DrawString(v.PadLeft(60), font, new SolidBrush(Color.Black), startX, startY + offset);
+                offset = offset + (int)fontHeight + 5;
+            } //kinuha from input ng user yung form1.productnamelist.
+            offset = offset + (int)fontHeight + 5;
+            graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + 20;
+            graphic.DrawString("Total:    ".PadLeft(35) + " ".PadLeft(23) + _totalPrice, font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + 20;
+            graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + (int)fontHeight + 5;
+            offset = offset + 20;
+            //graphic.DrawString("Money:  ".PadLeft(33) + " ".PadLeft(23) + mon, font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + 20;
+            offset = offset + 5;
+            //graphic.DrawString("Change:".PadLeft(32) + " ".PadLeft(23) + total, font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + 20;
+            offset = offset + 20;
+            offset = offset + 20;
+            graphic.DrawString("This invoice/receipt shall be valid from five(5) years from the date of the permit to use.", font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset + 20;
+            offset = offset + 20;
+            offset = offset + 20;
+            graphic.DrawString("Thank you for buying!".PadLeft(50), font, new SolidBrush(Color.Black), startX, startY + offset);
+
+        }
+
+
+        public void collateItems()
+        {
+            transactionList = new List<string>();
+            string temp = string.Empty;
+            
+            foreach (DataGridViewRow row in dtrgd_POS.Rows)
+            {
+                temp = string.Format("{0}\t{1}", row.Cells[1].Value.ToString(), row.Cells[3].Value.ToString());
+                transactionList.Add(temp);
+            }
         }
 
         private void btnG_Finalize_Click(object sender, EventArgs e)
@@ -306,7 +369,9 @@ namespace _POS
             BuildDataTable(dtrgd_POS, _tableName);
 
             //Produce the simulated receipt.
-            PrintReceipt(dtrgd_POS);
+            collateItems();
+            //CreateReceipt();
+            //PrintReceipt(dtrgd_POS);
 
 
             //Reset everything that is involved in the transaction process.
@@ -487,7 +552,6 @@ namespace _POS
         private void btn_PrintTransaction_Click(object sender, EventArgs e)
         {
             //Produce the simulated receipt.
-            PrintReceipt(dtgrd_transactions);
         }
 
         private void Tbctrl_POS_Click(object sender, EventArgs e)
