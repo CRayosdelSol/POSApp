@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DatabaseOperations;
-using DGVPrinterHelper;
 using static System.String;
 using System.Collections.Generic;
 using System.Collections;
@@ -379,7 +378,7 @@ namespace _POS
 
             _transactionCounter++;
             _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
-            dtrgd_POS.Rows.Add("TOTAL", "-", _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
+            dtrgd_POS.Rows.Add("TOTAL",Empty, _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
             BuildDataTable(dtrgd_POS, _tableName);
 
             //Reset everything that is involved in the transaction process.

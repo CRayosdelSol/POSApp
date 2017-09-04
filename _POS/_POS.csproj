@@ -183,10 +183,6 @@
       <Project>{d2e9aa52-0a35-48e3-af49-e17479812f12}</Project>
       <Name>DatabaseOperations</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DGVPrinterHelper\DGVPrinterHelper.csproj">
-      <Project>{f0a3e3ee-581f-4c2f-9e3d-211403191407}</Project>
-      <Name>DGVPrinterHelper</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Save_16x.png" />
