@@ -88,6 +88,7 @@
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btn_DeleteTransaction = new _POS.btnG_CancelTransaction();
             this.statusStrip1.SuspendLayout();
             this.Tbctrl_POS.SuspendLayout();
             this.Inventory.SuspendLayout();
@@ -111,10 +112,10 @@
             this.ststrplbl_Datetime,
             this.ststrplbl_Port,
             this.ststrplbl_IP});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 618);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 410);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 14, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1014, 30);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 9, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(680, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -122,21 +123,21 @@
             // 
             this.ststrplbl_Datetime.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_Datetime.Name = "ststrplbl_Datetime";
-            this.ststrplbl_Datetime.Size = new System.Drawing.Size(92, 25);
+            this.ststrplbl_Datetime.Size = new System.Drawing.Size(61, 17);
             this.ststrplbl_Datetime.Text = "Date Time";
             // 
             // ststrplbl_Port
             // 
             this.ststrplbl_Port.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_Port.Name = "ststrplbl_Port";
-            this.ststrplbl_Port.Size = new System.Drawing.Size(44, 25);
+            this.ststrplbl_Port.Size = new System.Drawing.Size(29, 17);
             this.ststrplbl_Port.Text = "Port";
             // 
             // ststrplbl_IP
             // 
             this.ststrplbl_IP.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.ststrplbl_IP.Name = "ststrplbl_IP";
-            this.ststrplbl_IP.Size = new System.Drawing.Size(97, 25);
+            this.ststrplbl_IP.Size = new System.Drawing.Size(62, 17);
             this.ststrplbl_IP.Text = "IP Address";
             // 
             // Tbctrl_POS
@@ -144,11 +145,13 @@
             this.Tbctrl_POS.Controls.Add(this.Inventory);
             this.Tbctrl_POS.Controls.Add(this.POS);
             this.Tbctrl_POS.Controls.Add(this.History);
-            this.Tbctrl_POS.Location = new System.Drawing.Point(0, 5);
+            this.Tbctrl_POS.Location = new System.Drawing.Point(0, 3);
+            this.Tbctrl_POS.Margin = new System.Windows.Forms.Padding(2);
             this.Tbctrl_POS.Name = "Tbctrl_POS";
             this.Tbctrl_POS.SelectedIndex = 0;
-            this.Tbctrl_POS.Size = new System.Drawing.Size(1017, 618);
+            this.Tbctrl_POS.Size = new System.Drawing.Size(678, 402);
             this.Tbctrl_POS.TabIndex = 2;
+            this.Tbctrl_POS.SelectedIndexChanged += new System.EventHandler(this.Tbctrl_POS_SelectedIndexChanged);
             this.Tbctrl_POS.Click += new System.EventHandler(this.Tbctrl_POS_Click);
             // 
             // Inventory
@@ -156,10 +159,11 @@
             this.Inventory.Controls.Add(this.groupBox1);
             this.Inventory.Controls.Add(this.grpbx_DBActions);
             this.Inventory.Controls.Add(this.dtgrd_Inventory);
-            this.Inventory.Location = new System.Drawing.Point(4, 29);
+            this.Inventory.Location = new System.Drawing.Point(4, 22);
+            this.Inventory.Margin = new System.Windows.Forms.Padding(2);
             this.Inventory.Name = "Inventory";
-            this.Inventory.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.Inventory.Size = new System.Drawing.Size(1009, 585);
+            this.Inventory.Padding = new System.Windows.Forms.Padding(2);
+            this.Inventory.Size = new System.Drawing.Size(670, 376);
             this.Inventory.TabIndex = 0;
             this.Inventory.Text = "Inventory";
             this.Inventory.UseVisualStyleBackColor = true;
@@ -169,9 +173,11 @@
             this.groupBox1.Controls.Add(this.cmbbx_searchMode);
             this.groupBox1.Controls.Add(this.txtbx_searchBox);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(10, 6);
+            this.groupBox1.Location = new System.Drawing.Point(7, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(284, 126);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(189, 82);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search";
@@ -184,17 +190,19 @@
             "Name",
             "Barcode",
             "Price"});
-            this.cmbbx_searchMode.Location = new System.Drawing.Point(14, 48);
+            this.cmbbx_searchMode.Location = new System.Drawing.Point(9, 31);
+            this.cmbbx_searchMode.Margin = new System.Windows.Forms.Padding(2);
             this.cmbbx_searchMode.Name = "cmbbx_searchMode";
-            this.cmbbx_searchMode.Size = new System.Drawing.Size(256, 28);
+            this.cmbbx_searchMode.Size = new System.Drawing.Size(172, 21);
             this.cmbbx_searchMode.TabIndex = 8;
             this.cmbbx_searchMode.SelectedIndexChanged += new System.EventHandler(this.cmbbx_searchMode_SelectedIndexChanged);
             // 
             // txtbx_searchBox
             // 
-            this.txtbx_searchBox.Location = new System.Drawing.Point(14, 85);
+            this.txtbx_searchBox.Location = new System.Drawing.Point(9, 55);
+            this.txtbx_searchBox.Margin = new System.Windows.Forms.Padding(2);
             this.txtbx_searchBox.Name = "txtbx_searchBox";
-            this.txtbx_searchBox.Size = new System.Drawing.Size(256, 26);
+            this.txtbx_searchBox.Size = new System.Drawing.Size(172, 20);
             this.txtbx_searchBox.TabIndex = 7;
             this.txtbx_searchBox.TextChanged += new System.EventHandler(this.txtbx_searchBox_TextChanged);
             // 
@@ -202,9 +210,10 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(14, 22);
+            this.label2.Location = new System.Drawing.Point(9, 14);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(83, 21);
+            this.label2.Size = new System.Drawing.Size(59, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "Search By:";
             // 
@@ -212,9 +221,11 @@
             // 
             this.grpbx_DBActions.Controls.Add(this.btn_Del);
             this.grpbx_DBActions.Controls.Add(this.btn_commit);
-            this.grpbx_DBActions.Location = new System.Drawing.Point(10, 138);
+            this.grpbx_DBActions.Location = new System.Drawing.Point(7, 90);
+            this.grpbx_DBActions.Margin = new System.Windows.Forms.Padding(2);
             this.grpbx_DBActions.Name = "grpbx_DBActions";
-            this.grpbx_DBActions.Size = new System.Drawing.Size(284, 102);
+            this.grpbx_DBActions.Padding = new System.Windows.Forms.Padding(2);
+            this.grpbx_DBActions.Size = new System.Drawing.Size(189, 66);
             this.grpbx_DBActions.TabIndex = 2;
             this.grpbx_DBActions.TabStop = false;
             this.grpbx_DBActions.Text = "Actions";
@@ -222,9 +233,10 @@
             // btn_Del
             // 
             this.btn_Del.Image = ((System.Drawing.Image)(resources.GetObject("btn_Del.Image")));
-            this.btn_Del.Location = new System.Drawing.Point(88, 26);
+            this.btn_Del.Location = new System.Drawing.Point(59, 17);
+            this.btn_Del.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Del.Name = "btn_Del";
-            this.btn_Del.Size = new System.Drawing.Size(69, 65);
+            this.btn_Del.Size = new System.Drawing.Size(46, 42);
             this.btn_Del.TabIndex = 2;
             this.btn_Del.UseVisualStyleBackColor = true;
             this.btn_Del.Click += new System.EventHandler(this.btn_Del_Click);
@@ -232,9 +244,10 @@
             // btn_commit
             // 
             this.btn_commit.Image = ((System.Drawing.Image)(resources.GetObject("btn_commit.Image")));
-            this.btn_commit.Location = new System.Drawing.Point(14, 26);
+            this.btn_commit.Location = new System.Drawing.Point(9, 17);
+            this.btn_commit.Margin = new System.Windows.Forms.Padding(2);
             this.btn_commit.Name = "btn_commit";
-            this.btn_commit.Size = new System.Drawing.Size(69, 65);
+            this.btn_commit.Size = new System.Drawing.Size(46, 42);
             this.btn_commit.TabIndex = 1;
             this.btn_commit.UseVisualStyleBackColor = true;
             this.btn_commit.Click += new System.EventHandler(this.btn_commit_Click);
@@ -268,7 +281,8 @@
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dtgrd_Inventory.DefaultCellStyle = dataGridViewCellStyle4;
             this.dtgrd_Inventory.GridColor = System.Drawing.Color.DarkOrange;
-            this.dtgrd_Inventory.Location = new System.Drawing.Point(308, 6);
+            this.dtgrd_Inventory.Location = new System.Drawing.Point(205, 4);
+            this.dtgrd_Inventory.Margin = new System.Windows.Forms.Padding(2);
             this.dtgrd_Inventory.Name = "dtgrd_Inventory";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
@@ -280,7 +294,7 @@
             this.dtgrd_Inventory.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dtgrd_Inventory.RowTemplate.Height = 28;
             this.dtgrd_Inventory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgrd_Inventory.Size = new System.Drawing.Size(693, 566);
+            this.dtgrd_Inventory.Size = new System.Drawing.Size(462, 368);
             this.dtgrd_Inventory.TabIndex = 0;
             // 
             // ID
@@ -335,10 +349,11 @@
             this.POS.Controls.Add(this.panel1);
             this.POS.Controls.Add(this.grpbx_summary);
             this.POS.Controls.Add(this.dtrgd_POS);
-            this.POS.Location = new System.Drawing.Point(4, 29);
+            this.POS.Location = new System.Drawing.Point(4, 22);
+            this.POS.Margin = new System.Windows.Forms.Padding(2);
             this.POS.Name = "POS";
-            this.POS.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.POS.Size = new System.Drawing.Size(1009, 585);
+            this.POS.Padding = new System.Windows.Forms.Padding(2);
+            this.POS.Size = new System.Drawing.Size(670, 376);
             this.POS.TabIndex = 1;
             this.POS.Text = "Point Of Sale";
             this.POS.UseVisualStyleBackColor = true;
@@ -348,10 +363,10 @@
             this.btnG_Quantity.BackColor = System.Drawing.Color.OliveDrab;
             this.btnG_Quantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_Quantity.Label = "QUANTITY";
-            this.btnG_Quantity.Location = new System.Drawing.Point(850, 238);
-            this.btnG_Quantity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_Quantity.Location = new System.Drawing.Point(567, 155);
+            this.btnG_Quantity.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_Quantity.Name = "btnG_Quantity";
-            this.btnG_Quantity.Size = new System.Drawing.Size(143, 108);
+            this.btnG_Quantity.Size = new System.Drawing.Size(96, 71);
             this.btnG_Quantity.TabIndex = 33;
             this.btnG_Quantity.Click += new System.EventHandler(this.btnG_Quantity_Click);
             // 
@@ -360,10 +375,10 @@
             this.btnG_TaxMultiplier.BackColor = System.Drawing.Color.BlueViolet;
             this.btnG_TaxMultiplier.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_TaxMultiplier.Label = "TAX";
-            this.btnG_TaxMultiplier.Location = new System.Drawing.Point(698, 238);
-            this.btnG_TaxMultiplier.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_TaxMultiplier.Location = new System.Drawing.Point(465, 155);
+            this.btnG_TaxMultiplier.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_TaxMultiplier.Name = "btnG_TaxMultiplier";
-            this.btnG_TaxMultiplier.Size = new System.Drawing.Size(143, 108);
+            this.btnG_TaxMultiplier.Size = new System.Drawing.Size(96, 71);
             this.btnG_TaxMultiplier.TabIndex = 32;
             this.btnG_TaxMultiplier.Load += new System.EventHandler(this.btnG_TaxMultiplier_Load);
             this.btnG_TaxMultiplier.Click += new System.EventHandler(this.btnG_TaxMultiplier_Click);
@@ -374,10 +389,10 @@
             this.btnG_DeleteItems.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_DeleteItems.Enabled = false;
             this.btnG_DeleteItems.Label = "DELETE";
-            this.btnG_DeleteItems.Location = new System.Drawing.Point(698, 122);
-            this.btnG_DeleteItems.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_DeleteItems.Location = new System.Drawing.Point(465, 79);
+            this.btnG_DeleteItems.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_DeleteItems.Name = "btnG_DeleteItems";
-            this.btnG_DeleteItems.Size = new System.Drawing.Size(143, 108);
+            this.btnG_DeleteItems.Size = new System.Drawing.Size(96, 71);
             this.btnG_DeleteItems.TabIndex = 31;
             this.btnG_DeleteItems.Load += new System.EventHandler(this.btnG_DeleteItems_Load);
             this.btnG_DeleteItems.Click += new System.EventHandler(this.btnG_DeleteItems_Click);
@@ -388,10 +403,10 @@
             this.btn_startScan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btn_startScan.Enabled = false;
             this.btn_startScan.Label = "SCAN";
-            this.btn_startScan.Location = new System.Drawing.Point(850, 355);
-            this.btn_startScan.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btn_startScan.Location = new System.Drawing.Point(567, 231);
+            this.btn_startScan.Margin = new System.Windows.Forms.Padding(1);
             this.btn_startScan.Name = "btn_startScan";
-            this.btn_startScan.Size = new System.Drawing.Size(143, 110);
+            this.btn_startScan.Size = new System.Drawing.Size(96, 72);
             this.btn_startScan.TabIndex = 30;
             this.btn_startScan.Load += new System.EventHandler(this.btnG_StartScanning_Load);
             this.btn_startScan.Click += new System.EventHandler(this.btnG_StartScanning_Click);
@@ -401,10 +416,10 @@
             this.btnG_ScannerSettings.BackColor = System.Drawing.Color.Purple;
             this.btnG_ScannerSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_ScannerSettings.Label = "SET SCAN";
-            this.btnG_ScannerSettings.Location = new System.Drawing.Point(698, 355);
-            this.btnG_ScannerSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_ScannerSettings.Location = new System.Drawing.Point(465, 231);
+            this.btnG_ScannerSettings.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_ScannerSettings.Name = "btnG_ScannerSettings";
-            this.btnG_ScannerSettings.Size = new System.Drawing.Size(143, 108);
+            this.btnG_ScannerSettings.Size = new System.Drawing.Size(96, 71);
             this.btnG_ScannerSettings.TabIndex = 29;
             this.btnG_ScannerSettings.Load += new System.EventHandler(this.btnG_ScannerSettings_Load);
             this.btnG_ScannerSettings.Click += new System.EventHandler(this.btnG_ScannerSettings_Click);
@@ -415,10 +430,10 @@
             this.btnG_CancelTransaction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_CancelTransaction.Enabled = false;
             this.btnG_CancelTransaction.Label = "CANCEL";
-            this.btnG_CancelTransaction.Location = new System.Drawing.Point(848, 8);
-            this.btnG_CancelTransaction.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_CancelTransaction.Location = new System.Drawing.Point(565, 5);
+            this.btnG_CancelTransaction.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_CancelTransaction.Name = "btnG_CancelTransaction";
-            this.btnG_CancelTransaction.Size = new System.Drawing.Size(148, 108);
+            this.btnG_CancelTransaction.Size = new System.Drawing.Size(99, 71);
             this.btnG_CancelTransaction.TabIndex = 28;
             this.btnG_CancelTransaction.Load += new System.EventHandler(this.btnG_CancelTransaction_Load);
             this.btnG_CancelTransaction.Click += new System.EventHandler(this.btnG_CancelTransaction_Click);
@@ -429,10 +444,10 @@
             this.btnG_Placeholder1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btnG_Placeholder1.Enabled = false;
             this.btnG_Placeholder1.Label = "";
-            this.btnG_Placeholder1.Location = new System.Drawing.Point(849, 122);
-            this.btnG_Placeholder1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_Placeholder1.Location = new System.Drawing.Point(566, 79);
+            this.btnG_Placeholder1.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_Placeholder1.Name = "btnG_Placeholder1";
-            this.btnG_Placeholder1.Size = new System.Drawing.Size(144, 108);
+            this.btnG_Placeholder1.Size = new System.Drawing.Size(97, 71);
             this.btnG_Placeholder1.TabIndex = 27;
             // 
             // btnG_Finalize
@@ -442,10 +457,10 @@
             this.btnG_Finalize.Enabled = false;
             this.btnG_Finalize.ForeColor = System.Drawing.SystemColors.Info;
             this.btnG_Finalize.Label = "FINALIZE";
-            this.btnG_Finalize.Location = new System.Drawing.Point(696, 6);
-            this.btnG_Finalize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnG_Finalize.Location = new System.Drawing.Point(464, 4);
+            this.btnG_Finalize.Margin = new System.Windows.Forms.Padding(1);
             this.btnG_Finalize.Name = "btnG_Finalize";
-            this.btnG_Finalize.Size = new System.Drawing.Size(144, 110);
+            this.btnG_Finalize.Size = new System.Drawing.Size(97, 72);
             this.btnG_Finalize.TabIndex = 20;
             this.btnG_Finalize.Load += new System.EventHandler(this.btnG_Finalize_Load);
             this.btnG_Finalize.Click += new System.EventHandler(this.btnG_Finalize_Click);
@@ -454,9 +469,10 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Black;
             this.panel1.Controls.Add(this.txtbx_total);
-            this.panel1.Location = new System.Drawing.Point(8, 8);
+            this.panel1.Location = new System.Drawing.Point(5, 5);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(680, 94);
+            this.panel1.Size = new System.Drawing.Size(453, 61);
             this.panel1.TabIndex = 16;
             // 
             // txtbx_total
@@ -465,9 +481,10 @@
             this.txtbx_total.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtbx_total.Font = new System.Drawing.Font("Consolas", 26F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtbx_total.ForeColor = System.Drawing.Color.Lime;
-            this.txtbx_total.Location = new System.Drawing.Point(3, 18);
+            this.txtbx_total.Location = new System.Drawing.Point(2, 12);
+            this.txtbx_total.Margin = new System.Windows.Forms.Padding(2);
             this.txtbx_total.Name = "txtbx_total";
-            this.txtbx_total.Size = new System.Drawing.Size(674, 61);
+            this.txtbx_total.Size = new System.Drawing.Size(449, 41);
             this.txtbx_total.TabIndex = 11;
             this.txtbx_total.Text = "TOTAL     ₱0.00";
             this.txtbx_total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -476,9 +493,11 @@
             // 
             this.grpbx_summary.Controls.Add(this.lbl_CurrentTaxMult);
             this.grpbx_summary.Controls.Add(this.lbl_totalItems);
-            this.grpbx_summary.Location = new System.Drawing.Point(692, 472);
+            this.grpbx_summary.Location = new System.Drawing.Point(461, 307);
+            this.grpbx_summary.Margin = new System.Windows.Forms.Padding(2);
             this.grpbx_summary.Name = "grpbx_summary";
-            this.grpbx_summary.Size = new System.Drawing.Size(309, 100);
+            this.grpbx_summary.Padding = new System.Windows.Forms.Padding(2);
+            this.grpbx_summary.Size = new System.Drawing.Size(206, 65);
             this.grpbx_summary.TabIndex = 12;
             this.grpbx_summary.TabStop = false;
             this.grpbx_summary.Text = "Additional Details";
@@ -486,18 +505,20 @@
             // lbl_CurrentTaxMult
             // 
             this.lbl_CurrentTaxMult.AutoSize = true;
-            this.lbl_CurrentTaxMult.Location = new System.Drawing.Point(22, 63);
+            this.lbl_CurrentTaxMult.Location = new System.Drawing.Point(15, 41);
+            this.lbl_CurrentTaxMult.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_CurrentTaxMult.Name = "lbl_CurrentTaxMult";
-            this.lbl_CurrentTaxMult.Size = new System.Drawing.Size(170, 20);
+            this.lbl_CurrentTaxMult.Size = new System.Drawing.Size(115, 13);
             this.lbl_CurrentTaxMult.TabIndex = 1;
             this.lbl_CurrentTaxMult.Text = "Current Tax Multiplier: -";
             // 
             // lbl_totalItems
             // 
             this.lbl_totalItems.AutoSize = true;
-            this.lbl_totalItems.Location = new System.Drawing.Point(20, 32);
+            this.lbl_totalItems.Location = new System.Drawing.Point(13, 21);
+            this.lbl_totalItems.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_totalItems.Name = "lbl_totalItems";
-            this.lbl_totalItems.Size = new System.Drawing.Size(200, 20);
+            this.lbl_totalItems.Size = new System.Drawing.Size(134, 13);
             this.lbl_totalItems.TabIndex = 0;
             this.lbl_totalItems.Text = "Current Total No. of Items:-";
             // 
@@ -530,11 +551,12 @@
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dtrgd_POS.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dtrgd_POS.Location = new System.Drawing.Point(8, 106);
+            this.dtrgd_POS.Location = new System.Drawing.Point(5, 69);
+            this.dtrgd_POS.Margin = new System.Windows.Forms.Padding(2);
             this.dtrgd_POS.Name = "dtrgd_POS";
             this.dtrgd_POS.RowTemplate.Height = 28;
             this.dtrgd_POS.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtrgd_POS.Size = new System.Drawing.Size(680, 466);
+            this.dtrgd_POS.Size = new System.Drawing.Size(453, 303);
             this.dtrgd_POS.TabIndex = 3;
             this.dtrgd_POS.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dtrgd_POS_RowsAdded);
             this.dtrgd_POS.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dtrgd_POS_RowsRemoved);
@@ -574,21 +596,25 @@
             // 
             this.History.Controls.Add(this.grpbx_transactionList);
             this.History.Controls.Add(this.dtgrd_transactions);
-            this.History.Location = new System.Drawing.Point(4, 29);
+            this.History.Location = new System.Drawing.Point(4, 22);
+            this.History.Margin = new System.Windows.Forms.Padding(2);
             this.History.Name = "History";
-            this.History.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.History.Size = new System.Drawing.Size(1009, 585);
+            this.History.Padding = new System.Windows.Forms.Padding(2);
+            this.History.Size = new System.Drawing.Size(670, 376);
             this.History.TabIndex = 2;
             this.History.Text = "History";
             this.History.UseVisualStyleBackColor = true;
             // 
             // grpbx_transactionList
             // 
+            this.grpbx_transactionList.Controls.Add(this.btn_DeleteTransaction);
             this.grpbx_transactionList.Controls.Add(this.btn_PrintTransaction);
             this.grpbx_transactionList.Controls.Add(this.lstbx_transactions);
-            this.grpbx_transactionList.Location = new System.Drawing.Point(6, 6);
+            this.grpbx_transactionList.Location = new System.Drawing.Point(4, 4);
+            this.grpbx_transactionList.Margin = new System.Windows.Forms.Padding(2);
             this.grpbx_transactionList.Name = "grpbx_transactionList";
-            this.grpbx_transactionList.Size = new System.Drawing.Size(284, 566);
+            this.grpbx_transactionList.Padding = new System.Windows.Forms.Padding(2);
+            this.grpbx_transactionList.Size = new System.Drawing.Size(189, 368);
             this.grpbx_transactionList.TabIndex = 2;
             this.grpbx_transactionList.TabStop = false;
             this.grpbx_transactionList.Text = "Transactions";
@@ -599,19 +625,20 @@
             this.btn_PrintTransaction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.btn_PrintTransaction.ForeColor = System.Drawing.SystemColors.Info;
             this.btn_PrintTransaction.Label = "label1";
-            this.btn_PrintTransaction.Location = new System.Drawing.Point(6, 477);
+            this.btn_PrintTransaction.Location = new System.Drawing.Point(4, 310);
+            this.btn_PrintTransaction.Margin = new System.Windows.Forms.Padding(1);
             this.btn_PrintTransaction.Name = "btn_PrintTransaction";
-            this.btn_PrintTransaction.Size = new System.Drawing.Size(270, 82);
+            this.btn_PrintTransaction.Size = new System.Drawing.Size(181, 54);
             this.btn_PrintTransaction.TabIndex = 1;
             this.btn_PrintTransaction.Click += new System.EventHandler(this.btn_PrintTransaction_Click);
             // 
             // lstbx_transactions
             // 
             this.lstbx_transactions.FormattingEnabled = true;
-            this.lstbx_transactions.ItemHeight = 20;
-            this.lstbx_transactions.Location = new System.Drawing.Point(6, 25);
+            this.lstbx_transactions.Location = new System.Drawing.Point(4, 16);
+            this.lstbx_transactions.Margin = new System.Windows.Forms.Padding(2);
             this.lstbx_transactions.Name = "lstbx_transactions";
-            this.lstbx_transactions.Size = new System.Drawing.Size(270, 444);
+            this.lstbx_transactions.Size = new System.Drawing.Size(181, 225);
             this.lstbx_transactions.TabIndex = 0;
             this.lstbx_transactions.Click += new System.EventHandler(this.lstbx_transactions_SelectedIndexChanged);
             // 
@@ -644,12 +671,13 @@
             dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dtgrd_transactions.DefaultCellStyle = dataGridViewCellStyle11;
             this.dtgrd_transactions.GridColor = System.Drawing.Color.DarkOrange;
-            this.dtgrd_transactions.Location = new System.Drawing.Point(306, 6);
+            this.dtgrd_transactions.Location = new System.Drawing.Point(204, 4);
+            this.dtgrd_transactions.Margin = new System.Windows.Forms.Padding(2);
             this.dtgrd_transactions.Name = "dtgrd_transactions";
             this.dtgrd_transactions.ReadOnly = true;
             this.dtgrd_transactions.RowTemplate.Height = 28;
             this.dtgrd_transactions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgrd_transactions.Size = new System.Drawing.Size(693, 566);
+            this.dtgrd_transactions.Size = new System.Drawing.Size(462, 368);
             this.dtgrd_transactions.TabIndex = 1;
             // 
             // dataGridViewTextBoxColumn5
@@ -692,17 +720,30 @@
             this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
             // 
+            // btn_DeleteTransaction
+            // 
+            this.btn_DeleteTransaction.BackColor = System.Drawing.Color.Firebrick;
+            this.btn_DeleteTransaction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.btn_DeleteTransaction.Label = "label1";
+            this.btn_DeleteTransaction.Location = new System.Drawing.Point(4, 249);
+            this.btn_DeleteTransaction.Margin = new System.Windows.Forms.Padding(2);
+            this.btn_DeleteTransaction.Name = "btn_DeleteTransaction";
+            this.btn_DeleteTransaction.Size = new System.Drawing.Size(181, 54);
+            this.btn_DeleteTransaction.TabIndex = 2;
+            this.btn_DeleteTransaction.Click += new System.EventHandler(this.btn_DeleteTransaction_Click);
+            // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1014, 648);
+            this.ClientSize = new System.Drawing.Size(680, 432);
             this.Controls.Add(this.Tbctrl_POS);
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(1036, 704);
-            this.MinimumSize = new System.Drawing.Size(1036, 704);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximumSize = new System.Drawing.Size(696, 471);
+            this.MinimumSize = new System.Drawing.Size(696, 471);
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Donkey Horse Mini Grocery POS ";
@@ -778,6 +819,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox txtbx_total;
         private btnG_Finalize btn_PrintTransaction;
+        private btnG_CancelTransaction btn_DeleteTransaction;
     }
 }
 
