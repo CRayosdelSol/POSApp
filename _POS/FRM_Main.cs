@@ -205,7 +205,7 @@ namespace _POS
         private void Scan()
         {
             TcpListener server = null;
-            var bytes = new byte[512];
+            var bytes = new byte[256];
 
             try
             {
@@ -248,24 +248,6 @@ namespace _POS
                 BindDatasource(dtgrd_transactions, lstbx_transactions.SelectedItem.ToString());
         }
 
-        //private void PrintReceipt(DataGridView grid)
-        //{
-        //    var receiptPrinter = new DGVPrinter
-        //    {
-        //        Title = "Donkey Horse Mini Grocery",
-        //        SubTitle =
-        //            "MMMM St. YEFF OF YEX CITY, 1331, (02)131-13-33\n1234567, yehaawNeigh@gmail.com, WWW.DONKEYHORSEMINI.com",
-        //        SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip,
-        //        PageNumbers = false,
-        //        PageNumberInHeader = false,
-        //        PorportionalColumns = true,
-        //        HeaderCellAlignment = StringAlignment.Near,
-        //        Footer = Format("THIS SERVES AS YOUR OFFICIAL RECEIPT " + $"\n{DateTime.Now:MMMM dd, yyyy}"),
-        //        FooterSpacing = 15
-        //    };
-        //    receiptPrinter.PrintDataGridView(grid);
-        //}
-
         public void CreateReceipt(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Graphics graphic = e.Graphics;
@@ -278,10 +260,15 @@ namespace _POS
             int startY = 10;
             int offset = 40;
 
-            graphic.DrawString("Donkey Kong Online Shop".PadLeft(38), new Font("Courier New", 18), new SolidBrush(Color.Black), startX, startY);
-            string top = "Date and Time: ".PadLeft(35) + DateTime.Now.ToString();
+            graphic.DrawString("Donkey Horse Mini Grocery".PadLeft(39), new Font("Courier New", 18), new SolidBrush(Color.Black), startX, startY);
+            string top = "Nice St. JEFF OF VEX CITY, 1331, (02)131-13-33";
+            string subTop = "1234567, yehaawNeigh@gmail.com, WWW.DONKEYHORSEMINI.com";
 
-            graphic.DrawString(top, font, new SolidBrush(Color.Black), startX, startY + offset);
+            graphic.DrawString(top.PadLeft(71), new Font("Courier New",10), new SolidBrush(Color.Black), startX, startY + offset-15);
+            offset = offset + (int)fontHeight; //spacing
+            graphic.DrawString(subTop, new Font("Courier New",8), new SolidBrush(Color.Black), startX + 224,
+                startY + offset-15);
+
             offset = offset + (int)fontHeight; //spacing
             graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
             offset = offset + (int)fontHeight + 5; //make the spacing consistent
@@ -293,7 +280,7 @@ namespace _POS
             offset = offset + (int)fontHeight + 5;
             graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
             offset = offset + 20;
-            graphic.DrawString("Total:    ".PadLeft(35) + " ".PadLeft(23) + _totalPrice, font, new SolidBrush(Color.Black), startX, startY + offset);
+            graphic.DrawString("Total:    ".PadLeft(32) + " ".PadLeft(20) + _totalPrice.ToString("0.00##"), font, new SolidBrush(Color.Black), startX, startY + offset);
             offset = offset + 20;
             graphic.DrawString(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ".PadLeft(30), font, new SolidBrush(Color.Black), startX, startY + offset);
             offset = offset + (int)fontHeight + 5;
@@ -305,25 +292,49 @@ namespace _POS
             offset = offset + 20;
             offset = offset + 20;
             offset = offset + 20;
-            graphic.DrawString("This invoice/receipt shall be valid from five(5) years from the date of the permit to use.", font, new SolidBrush(Color.Black), startX, startY + offset);
-            offset = offset + 20;
-            offset = offset + 20;
-            offset = offset + 20;
-            graphic.DrawString("Thank you for buying!".PadLeft(50), font, new SolidBrush(Color.Black), startX, startY + offset);
+            graphic.DrawString(Format("THIS SERVES AS YOUR OFFICIAL RECEIPT".PadLeft(58)), font, new SolidBrush(Color.Black), startX, startY + offset);
+            offset = offset - 5;
+            graphic.DrawString(Format($"\n{DateTime.Now:MMMM dd, yyyy}"), font, new SolidBrush(Color.Black), startX+322, startY + offset);
+            offset = offset + 60;
+            graphic.DrawString("Thank you for buying!".PadLeft(51), font, new SolidBrush(Color.Black), startX, startY + offset);
 
         }
 
 
-        public void collateItems()
+        public void collateItems(DataGridView grid)
         {
             transactionList = new List<string>();
             string temp = string.Empty;
-            
-            foreach (DataGridViewRow row in dtrgd_POS.Rows)
+
+            if (grid.Name == "dtrgd_POS")
             {
-                temp = string.Format("{0}\t{1}", row.Cells[1].Value.ToString(), row.Cells[3].Value.ToString());
-                transactionList.Add(temp);
+                foreach (DataGridViewRow row in grid.Rows)
+                {
+                    temp = string.Format("{0}".PadRight(25).PadLeft(15) + "{1}".PadLeft(5),
+                        row.Cells[1].Value.ToString(), row.Cells[3].Value.ToString());
+
+                    transactionList.Add(temp);
+                }
             }
+            else
+            {
+                foreach (DataGridViewRow row in grid.Rows)
+                {
+                    if (row.Cells[1].Value.ToString() != "TOTAL")
+                    {
+                        temp = string.Format("{0}".PadRight(25).PadLeft(15) + "{1}".PadLeft(5),
+                            row.Cells[2].Value.ToString(), row.Cells[4].Value.ToString());
+
+                        transactionList.Add(temp);
+                    }
+                    else
+                    {
+                        _totalPrice = decimal.Parse(row.Cells[4].Value.ToString());
+                    }
+                }
+            }
+
+
         }
 
         private void btnG_Finalize_Click(object sender, EventArgs e)
@@ -364,25 +375,12 @@ namespace _POS
                 }
             }
 
+            printReceipt(dtrgd_POS);
+
             _transactionCounter++;
             _tableName = $"[TRANSACTION-{DateTime.Now:MM-dd-yyyy-hh-mm}({_transactionCounter})]";
-            dtrgd_POS.Rows.Add("TOTAL", Empty, _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
+            dtrgd_POS.Rows.Add("TOTAL", "-", _totalQuantity.ToString(), _totalPrice.ToString("0.00##"));
             BuildDataTable(dtrgd_POS, _tableName);
-
-            //Produce the simulated receipt.
-            collateItems();
-            PrintDialog printdiag = new PrintDialog();
-            PrintDocument printDoc = new PrintDocument();
-            printdiag.Document = printDoc;
-            printDoc.PrintPage+= new System.Drawing.Printing.PrintPageEventHandler(CreateReceipt);
-            DialogResult result = printdiag.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                printDoc.Print();
-            }
-            //CreateReceipt();
-            //PrintReceipt(dtrgd_POS);
-
 
             //Reset everything that is involved in the transaction process.
             _totalQuantity = 0;
@@ -398,6 +396,20 @@ namespace _POS
             btnG_DeleteItems.Enabled = false;
             btnG_Finalize.Enabled = false;
             btnG_CancelTransaction.Enabled = false;
+        }
+
+        public void printReceipt(DataGridView grid)
+        {
+            collateItems(grid);
+            PrintDialog printdiag = new PrintDialog();
+            PrintDocument printDoc = new PrintDocument();
+            printdiag.Document = printDoc;
+            printDoc.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(CreateReceipt);
+            DialogResult result = printdiag.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                printDoc.Print();
+            }
         }
 
         private void btnG_CancelTransaction_Load(object sender, EventArgs e)
@@ -562,6 +574,7 @@ namespace _POS
         private void btn_PrintTransaction_Click(object sender, EventArgs e)
         {
             //Produce the simulated receipt.
+            printReceipt(dtgrd_transactions);
         }
 
         private void Tbctrl_POS_Click(object sender, EventArgs e)
@@ -614,9 +627,6 @@ namespace _POS
             }
 
             dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.Rows.Add(items); }));
-
-            //dtrgd_POS.Invoke(new MethodInvoker(delegate { dtrgd_POS.DataSource = dt; }));
-            //dtrgd_POS.Rows.Add(items);
         }
 
         private void BuildDataTable(DataGridView grid, string tableName)
