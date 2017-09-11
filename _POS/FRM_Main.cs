@@ -43,6 +43,8 @@ namespace _POS
         private bool _isScanning;
         private List<string> _transactionList;
 
+        internal List<DataGridViewRow> transactionData;
+
         public FrmMain()
         {
             InitializeComponent();
@@ -73,7 +75,7 @@ namespace _POS
 
             HaveSpecificTaxMultiplier = true;
             TaxMultiplier = 0.12m;
-            
+            cmbbx_searchMode.SelectedIndex = 0;
 
 
             btn_startScan.Enabled = false;
@@ -159,16 +161,13 @@ namespace _POS
         {
             var searchMode = cmbbx_searchMode.GetItemText(cmbbx_searchMode.SelectedItem).Replace(" ", "").ToLower();
             if (searchMode == "name")
+            {
                 _ds.Tables["Items"].DefaultView.RowFilter = $"Item LIKE '%{txtbx_searchBox.Text}%'";
-            else if (searchMode == "barcode")
+            }
+            else
+            {
                 _ds.Tables["Items"].DefaultView.RowFilter = $"Barcode LIKE '%{txtbx_searchBox.Text}%'";
-            else if (searchMode == "price")
-                if (txtbx_searchBox.Text.Length >= 3 && txtbx_searchBox.Text.Contains("-"))
-                {
-                    var values = txtbx_searchBox.Text.Split('-');
-                    _ds.Tables["Items"].DefaultView.RowFilter =
-                        $"Price >= {values[0]} and Price <= {values[1]}";
-                }
+            }
 
             dtgrd_Inventory.DataSource = _ds.Tables["Items"].DefaultView;
         }
@@ -467,12 +466,44 @@ namespace _POS
             btnG_TaxMultiplier.Label = "TAX\nMULTIPLIER";
         }
 
+        public void BackupAndRestoreTransaction(DataGridView grid)
+        {
+            transactionData = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                transactionData.Add(row);
+            }
+
+            _totalPrice = 0;
+            _totalQuantity = 0;
+            dtrgd_POS.Rows.Clear();
+            dtrgd_POS.Refresh();
+
+            foreach (DataGridViewRow row in transactionData)
+            {
+                grid.Rows.Add(row);
+            }
+        }
+
         private void btnG_TaxMultiplier_Click(object sender, EventArgs e)
         {
-            var dialogResult =
-                MessageBox.Show(
-                    "The tax multiplier has already been properly set according to your locality. Are you sure you wish to replace it?",
-                    "Set Tax Mutliplier", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var dialogResult = DialogResult.Cancel;
+
+            if (dtrgd_POS.RowCount == 0)
+            {
+                dialogResult =
+                    MessageBox.Show(
+                        "The tax multiplier has already been properly set according to your locality. Are you sure you wish to replace it?",
+                        "Set Tax Mutliplier", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+            else
+            {
+                dialogResult =
+                    MessageBox.Show(
+                        "Changing the value of the tax multiplier will recompute the current transaction to match the new mutliplier. Are you sure you wish to continue?",
+                        "Set Tax Mutliplier", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+
 
             if (dialogResult == DialogResult.Yes)
             {
@@ -481,6 +512,11 @@ namespace _POS
                 lbl_CurrentTaxMult.Text = HaveSpecificTaxMultiplier
                     ? $"Current Tax Multiplier: {TaxMultiplier * 100}%"
                     : "Current Tax Multiplier: None";
+
+                if (dtrgd_POS.RowCount > 0)
+                {
+                    BackupAndRestoreTransaction(dtrgd_POS);
+                }
             }
             else
             {
@@ -651,20 +687,30 @@ namespace _POS
 
         private void btn_DeleteTransaction_Click(object sender, EventArgs e)
         {
-//            Debug.Assert(lstbx_transactions.SelectedItems != null, "lstbx_transactions.SelectedItems != null");
+            //Debug.Assert(lstbx_transactions.SelectedItems != null, "lstbx_transactions.SelectedItems != null");
             if(lstbx_transactions.SelectedItems.Count == 0) return;
 
-            var tableName = lstbx_transactions.SelectedItems[0].ToString();
+            var dialogResult = MessageBox.Show(@"Are you sure you wish to delete this transaction? This action cannot be undone.",
+                @"Finalize Transaction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            var conn = new SqlConnection(_connString);
-            var cmd = $@"DROP TABLE [{tableName}]";
-            var drop = new SqlCommand(cmd, conn);
+            if (dialogResult == DialogResult.Yes)
+            {
+                var tableName = lstbx_transactions.SelectedItems[0].ToString();
 
-            conn.Open();
-            drop.ExecuteNonQuery();
-            conn.Close();
+                var conn = new SqlConnection(_connString);
+                var cmd = $@"DROP TABLE [{tableName}]";
+                var drop = new SqlCommand(cmd, conn);
 
-            ListPreviousTransactions();
+                conn.Open();
+                drop.ExecuteNonQuery();
+                conn.Close();
+
+                ListPreviousTransactions();
+            }
+            else
+            {
+                //making sure nothing happens.
+            }
         }
 
         /// <summary>
