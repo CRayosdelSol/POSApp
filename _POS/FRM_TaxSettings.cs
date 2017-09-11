@@ -36,7 +36,7 @@ namespace _POS
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            _mainfrm.HaveSpecificTaxMultiplier = false;
+            _mainfrm.TaxMultiplier = 0.12m;
             Close();
         }
 

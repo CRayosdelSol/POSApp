@@ -71,11 +71,15 @@ namespace _POS
             txtbx_total.ReadOnly = true;
             MaximizeBox = false;
 
+            HaveSpecificTaxMultiplier = true;
+            TaxMultiplier = 0.12m;
+            
+
 
             btn_startScan.Enabled = false;
             ststrplbl_Port.Text = $@"Port: {"Not Set"}";
             ststrplbl_IP.Text = $@"I.P. Address: {"Not Set"}";
-            lbl_CurrentTaxMult.Text = $@"Current Tax Multiplier: {"None"}";
+            lbl_CurrentTaxMult.Text = $"Current Tax Multiplier: {TaxMultiplier * 100}%";
             lbl_totalItems.Text = $@"Current Total No. of Items: {0}";
 
             btn_PrintTransaction.Label = "Print Transaction";
@@ -187,6 +191,7 @@ namespace _POS
             btnG_CancelTransaction.Enabled = true;
 
             foreach (DataGridViewRow row in dtrgd_POS.Rows)
+            {
                 if (row.Cells[0].Value.ToString() != "TOTAL")
                 {
                     _totalQuantity += Convert.ToInt32(row.Cells[2].Value);
@@ -195,7 +200,7 @@ namespace _POS
                     if (HaveSpecificTaxMultiplier)
                         _totalPrice += _totalPrice * TaxMultiplier;
                 }
-
+            }
             //Display the total cost in terms of Philippine Peso
             txtbx_total.Text = @"TOTAL:   " + _totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
             lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
@@ -464,12 +469,23 @@ namespace _POS
 
         private void btnG_TaxMultiplier_Click(object sender, EventArgs e)
         {
-            HaveSpecificTaxMultiplier = false;
-            var taxSetFrm = new FrmTaxSettings(this);
-            taxSetFrm.ShowDialog();
-            lbl_CurrentTaxMult.Text = HaveSpecificTaxMultiplier
-                ? $"Current Tax Multiplier: {TaxMultiplier * 100}%"
-                : "Current Tax Multiplier: None";
+            var dialogResult =
+                MessageBox.Show(
+                    "The tax multiplier has already been properly set according to your locality. Are you sure you wish to replace it?",
+                    "Set Tax Mutliplier", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                var taxSetFrm = new FrmTaxSettings(this);
+                taxSetFrm.ShowDialog();
+                lbl_CurrentTaxMult.Text = HaveSpecificTaxMultiplier
+                    ? $"Current Tax Multiplier: {TaxMultiplier * 100}%"
+                    : "Current Tax Multiplier: None";
+            }
+            else
+            {
+                //Just making sure nothing happens.
+            }
         }
 
         private void btnG_Quantity_Click(object sender, EventArgs e)
@@ -571,9 +587,40 @@ namespace _POS
         {
             var dialogResult = MessageBox.Show(@"Are you sure you wish to delete the selected items?",
                 @"Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
             if (dialogResult == DialogResult.Yes)
+            {
+                _totalPrice = 0;
+                _totalQuantity = 0;
                 foreach (DataGridViewRow selectedRow in dtrgd_POS.SelectedRows)
+                {
                     dtrgd_POS.Rows.Remove(selectedRow);
+                }
+
+                if (dtrgd_POS.RowCount == 0)
+                {
+                    _totalPrice = 0;
+                    _totalQuantity = 0;
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in dtrgd_POS.Rows)
+                    {
+                        if (row.Cells[0].Value.ToString() != "TOTAL")
+                        {
+                            _totalQuantity += Convert.ToInt32(row.Cells[2].Value);
+                            _totalPrice += Convert.ToDecimal(row.Cells[3].Value);
+
+                            if (HaveSpecificTaxMultiplier)
+                                _totalPrice += _totalPrice * TaxMultiplier;
+                        }
+                    }
+                }
+
+                //Display the total cost in terms of Philippine Peso
+                txtbx_total.Text = @"TOTAL:   " + _totalPrice.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH"));
+                lbl_totalItems.Text = $@"Total Number of Items: {_totalQuantity}";
+            }
         }
 
         private void btn_commit_Click(object sender, EventArgs e)
