@@ -155,9 +155,9 @@ namespace _POS
         {
             var searchMode = cmbbx_searchMode.GetItemText(cmbbx_searchMode.SelectedItem).Replace(" ", "").ToLower();
             if (searchMode == "name")
-                _ds.Tables["Items"].DefaultView.RowFilter = $"Item LIKE '{txtbx_searchBox.Text}%'";
+                _ds.Tables["Items"].DefaultView.RowFilter = $"Item LIKE '%{txtbx_searchBox.Text}%'";
             else if (searchMode == "barcode")
-                _ds.Tables["Items"].DefaultView.RowFilter = $"Barcode LIKE '{txtbx_searchBox.Text}%'";
+                _ds.Tables["Items"].DefaultView.RowFilter = $"Barcode LIKE '%{txtbx_searchBox.Text}%'";
             else if (searchMode == "price")
                 if (txtbx_searchBox.Text.Length >= 3 && txtbx_searchBox.Text.Contains("-"))
                 {
@@ -594,11 +594,6 @@ namespace _POS
             dtgrd_Inventory.Refresh();
         }
 
-        private void btn_refresh_Click(object sender, EventArgs e)
-        {
-            InitializeDataGrid();
-        }
-
         private void Tbctrl_POS_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(Tbctrl_POS.SelectedIndex == 0)
@@ -612,10 +607,10 @@ namespace _POS
 //            Debug.Assert(lstbx_transactions.SelectedItems != null, "lstbx_transactions.SelectedItems != null");
             if(lstbx_transactions.SelectedItems.Count == 0) return;
 
-            var table_name = lstbx_transactions.SelectedItems[0].ToString();
+            var tableName = lstbx_transactions.SelectedItems[0].ToString();
 
             var conn = new SqlConnection(_connString);
-            var cmd = $@"DROP TABLE [{table_name}]";
+            var cmd = $@"DROP TABLE [{tableName}]";
             var drop = new SqlCommand(cmd, conn);
 
             conn.Open();
