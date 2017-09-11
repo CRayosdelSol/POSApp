@@ -74,7 +74,7 @@ VALUES  ( '4801234072629', -- Barcode - varchar(255)
 
 INSERT INTO dbo.Items
         ( Barcode, Item, Price, Quantity )
-VALUES  ( '480361373500', -- Barcode - varchar(255)
+VALUES  ( '4800361373500', -- Barcode - varchar(255)
           'Nestle Cream', -- Item - varchar(255)
           '48.50', -- Price - varchar(255)
           '50'  -- Quantity - varchar(255)
